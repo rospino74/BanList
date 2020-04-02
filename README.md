@@ -38,18 +38,26 @@ show:
          "reason":"Sparisci dal mio server, Canaglia!"
       }
    ],
-   "byIP":[]
+   "byIP":[
+    {
+         "name":"127.0.0.1",
+         "until":"forever",
+         "created":1585564034000,
+         "admin":"MemoryOfLife",
+         "reason":"Sparisci dal mio server, Canaglia!"
+      }
+   ]
 }
 ```
 | Chiave | Tipo | Significato |
 | :--- | :---: | --- |
-| `name` | `String` | Nome del player bannato |
+| `name` | `String` | Nome del player bannato o il suo indirizzo IP |
 | `until` | `String` o `int` | Data del termine del ban. Può essere `forever` se il ban è permanente o una data formato Unix |
 | `created` | `int` | Data di creazione del ban, È una data formato Unix |
 | `admin` | `String` | Nome del admin che ha effetuato il ban. Può essere il nome di un player o `Server` se il ban è eseguito dalla console |
 | `reason` | `String` | Motivo del ban |
 
 ## Errori comuni
-* `java.net.BindException: Address already in use: bind`: La porta scelta è già in uso, cambiarla nel file di configurazione
+* `java.net.BindException`: La porta scelta è già in uso, cambiarla nel file di configurazione
 * `java.io.IOException`: Si è verificato un'errore nel comunicare con un'altro sistema
 * `org.yaml.snakeyaml.error.YAMLException`: Si è verificato un'errore nel leggere il file di configurazione, verifica se è valido!
