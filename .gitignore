@@ -1,3 +1,2 @@
-#Idea folder
-.idea/
-.idea/*
+.idea\
+.idea\*
