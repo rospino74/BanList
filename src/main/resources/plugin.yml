@@ -1,6 +1,6 @@
 main: it.marko.banlist.Main
 name: "BanList"
-version: "1.1.4 ALPHA"
+version: "1.0"
 author: "MemoryOfLife"
 description: "Restituisce in formato JSON la lista ban"
 api-version: "1.15"
