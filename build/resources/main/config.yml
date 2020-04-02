@@ -1,6 +1,0 @@
-output:
-  path: "/ban"
-  port: 80
-show:
-  byIP: true
-  byNAME: true
