@@ -5,7 +5,7 @@ BanList è un semplicissimo plugin per _Spigot/Bukkit_ che ti permette di avere 
 Un giorno non sapevo che fare a causa del coronavirus 🦠 e allora ho perso quaranta minuti della mia vita a realizzare il plugin...
 ## Come si installa?
 ### Utenti base
-* Scarica l'[ultima relase](https://github.com/rospino74/BanList/releases)
+* Scarica l'[ultima relase](https://github.com/rospino74/BanList/releases/latest)
 * Sposta il file `BanList-\<version\>.jar` nella cartella `plugins` del tuo server Minecraft
 * Riavvia il server e all'indirizzo `http://\<tuo-dominio-o-ip\>:80/ban` troverai la lista di utenti bannati
 ### Utenti Avanzati
