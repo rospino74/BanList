@@ -17,7 +17,7 @@ buildscript {
     }
 }
 
-group = "i.marko.banlist"
+group = "it.marko.banlist"
 version = "1.0-STABLE"
 
 apply(plugin = "com.github.johnrengelman.shadow")

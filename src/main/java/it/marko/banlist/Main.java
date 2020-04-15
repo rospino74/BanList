@@ -15,8 +15,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 
 public class Main extends JavaPlugin {
-    public static final String PLUGIN_NAME = "BanList";
-    public static Main instance;
+    private static Main instance;
     private HttpServer server;
 
     @Override
@@ -65,5 +64,9 @@ public class Main extends JavaPlugin {
 
     private void stopHTTPServer() {
         server.stop(0);
+    }
+
+    public static Main getInstance() {
+        return instance;
     }
 }

@@ -19,8 +19,8 @@ class RequestHandler : HttpHandler {
         val out = JsonObject()
 
         //mostrare i ban per ip?
-        val showIP = Main.instance.config.getBoolean("show.byIP", true)
-        val showNAME = Main.instance.config.getBoolean("show.byNAME", true)
+        val showIP = Main.getInstance().config.getBoolean("show.byIP", true)
+        val showNAME = Main.getInstance().config.getBoolean("show.byNAME", true)
 
         //json di ban per ip e nomi
         if (showNAME) {
