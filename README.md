@@ -1,13 +1,13 @@
 # BanList
 ## Cos'è questo BanList?
-BanList è un semplicissimo plugin per _Spigot/Bukkit_ che ti permette di avere in formato JSON la lista di utenti bannati nel tuo server minecraft, sia per indirizzo IP che per username!
+BanList è un semplicissimo plugin per _Spigot/Bukkit_ che ti permette di avere in formato JSON la lista di utenti bannati nel tuo server Minecraft, sia per indirizzo IP che per username!
 ## Storia di BanList
 Un giorno non sapevo che fare a causa del coronavirus 🦠 e allora ho perso quaranta minuti della mia vita a realizzare il plugin...
 ## Come si installa?
 ### Utenti base
 * Scarica l'[ultima relase](https://github.com/rospino74/BanList/releases/latest)
-* Sposta il file `BanList-\<version\>.jar` nella cartella `plugins` del tuo server Minecraft
-* Riavvia il server e all'indirizzo `http://\<tuo-dominio-o-ip\>:80/ban` troverai la lista di utenti bannati
+* Sposta il file `BanList-<version>.jar` nella cartella `plugins` del tuo server Minecraft
+* Riavvia il server e all'indirizzo `http://<tuo-dominio-o-ip>:80/ban` troverai la lista di utenti bannati
 ### Utenti Avanzati
 * Clona il repository e importalo nel tuo IDE
 * Compila i files Java e Kotlin (è necessario che il tuo IDE sia configurato per quest'ultimo)
@@ -32,7 +32,8 @@ show:
    "byNAME":[
       {
          "name":"MemoryOfLife",
-         "until":"forever",
+         "until":1585564044000,
+		 "forever":false,
          "created":1585564034000,
          "admin":"MemoryOfLife",
          "reason":"Sparisci dal mio server, Canaglia!"
@@ -41,7 +42,8 @@ show:
    "byIP":[
     {
          "name":"127.0.0.1",
-         "until":"forever",
+         "until":0,
+		 "forever":true,
          "created":1585564034000,
          "admin":"MemoryOfLife",
          "reason":"Sparisci dal mio server, Canaglia!"
@@ -52,12 +54,13 @@ show:
 | Chiave | Tipo | Significato |
 | :--- | :---: | --- |
 | `name` | `String` | Nome del player bannato o il suo indirizzo IP |
-| `until` | `String` o `int` | Data del termine del ban. Può essere `forever` se il ban è permanente o una data formato Unix |
-| `created` | `int` | Data di creazione del ban, È una data formato Unix |
+| `until` | `int` | Data del termine del ban. È una data formato Unix |
+| `forever` | `bool` | Se è `true` il ban è permanente |
+| `created` | `int` | Data di creazione del ban. È una data formato Unix |
 | `admin` | `String` | Nome del admin che ha effetuato il ban. Può essere il nome di un player o `Server` se il ban è eseguito dalla console |
 | `reason` | `String` | Motivo del ban |
 
 ## Errori comuni
 * `java.net.BindException`: La porta scelta è già in uso, cambiarla nel file di configurazione
-* `java.io.IOException`: Si è verificato un'errore nel comunicare con un'altro sistema
-* `org.yaml.snakeyaml.error.YAMLException`: Si è verificato un'errore nel leggere il file di configurazione, verifica se è valido!
+* `java.io.IOException`: Si è verificato un errore nel comunicare con un altro sistema
+* `org.yaml.snakeyaml.error.YAMLException`: Si è verificato un errore nel leggere il file di configurazione, verifica se è valido!

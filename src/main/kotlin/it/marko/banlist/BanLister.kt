@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020. MemoryOfLife
+ * Copyright (c) 2020MemoryOfLife
  * This file (BanLister.kt) and its related project (BanList) are governed by the Apache 2.0 license.
  * You may not use them except in compliance with the License which can be found at:
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -25,11 +25,13 @@ class BanLister {
                 //nome
                 obj.addProperty("name", e.target)
 
-                //se expiration == null imposto forever
+                //se expiration == null imposto forever a true
                 if (e.expiration == null) {
-                    obj.addProperty("until", "forever")
+                    obj.addProperty("until", 0)
+                    obj.addProperty("forever", true)
                 } else {
                     obj.addProperty("until", e.expiration!!.time)
+                    obj.addProperty("forever", false)
                 }
 
                 //data di creazione
