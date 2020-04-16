@@ -18,6 +18,11 @@ import java.net.InetSocketAddress;
 import java.util.logging.Level;
 
 public class Main extends JavaPlugin {
+    /**
+     * Prefisso del plugin per messaggi in chat. Utilizza i {@link ChatColor color codes} di Bukkit.
+     *
+     * @see ChatColor
+     */
     public static final String PREFIX = ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "[BanList] " + ChatColor.RESET;
     private static Main instance;
     private HttpServer server;
@@ -40,35 +45,45 @@ public class Main extends JavaPlugin {
         //assegno l'instanza
         Main.instance = this;
 
-        //prendo i dati da config
+        //salvo i config di default
         saveDefaultConfig();
-        String path = getConfig().getString("output.path");
-        int port = getConfig().getInt("output.port");
 
         //avvio il server in un runnable
         new BukkitRunnable() {
             @Override
             public void run() {
                 try {
+                    //prendo i dati
+                    String path = getConfig().getString("output.path");
+                    int port = getConfig().getInt("output.port");
+
+                    //creo il server
                     buildHTTPServer(path, port);
                 } catch (IOException | YAMLException e) {
                     //stampo l'errore
-                    getLogger().log(Level.WARNING, PREFIX + "Errore nel creare il server");
+                    getLogger().log(Level.SEVERE, PREFIX + "Errore nel creare il server");
 
                     //fornisco una breve spiegazione se l'eccezione è un'instanza di YAMLException
                     if (e instanceof YAMLException)
-                        getLogger().log(Level.WARNING, PREFIX + "Sembra che il file di configurazione non sia valido!");
+                        getLogger().log(Level.SEVERE, PREFIX + "Sembra che il file di configurazione non sia valido!");
 
                     //stampo un blocco con lo stackTrace
-                    getLogger().log(Level.WARNING, ChatColor.RED + "" + ChatColor.BOLD + "===== " + PREFIX + ChatColor.RED + "" + ChatColor.BOLD + "Inizio Report =====");
-                    e.printStackTrace();
-                    getLogger().log(Level.WARNING, ChatColor.RED + "" + ChatColor.BOLD + "===== Fine Report =====");
+                    getLogger().log(Level.SEVERE, ChatColor.RED + "" + ChatColor.BOLD + "===== " + PREFIX + ChatColor.RED + "" + ChatColor.BOLD + "Inizio Report =====", e);
+                    getLogger().log(Level.SEVERE, ChatColor.RED + "" + ChatColor.BOLD + "===== Fine Report =====");
                 }
             }
         }.runTaskAsynchronously(this);
 
     }
 
+    /**
+     * Crea un'instanza del server HTTP
+     * @param path Percorso da utilizzare per la creazione del server
+     * @param port Porta da utilizzare per la creazione del server
+     * @throws IOException Lancia una {@link IOException} se si verifica un errore nella creazione del server
+     *
+     * @see #stopHTTPServer()
+     */
     private void buildHTTPServer(String path, int port) throws IOException {
         server = HttpServer.create(new InetSocketAddress(port), 0);
         server.createContext(path, new RequestHandler());
@@ -76,10 +91,19 @@ public class Main extends JavaPlugin {
         server.start();
     }
 
+    /**
+     * Ferma il server creato con {@link #buildHTTPServer(String, int)}
+     */
     private void stopHTTPServer() {
         server.stop(0);
     }
 
+    /**
+     * Usa questo medoto per ottenere l'istanza della classe {@link Main}
+     *
+     * @return L'istanza corrente del plugin
+     * @see JavaPlugin
+     */
     public static Main getInstance() {
         return instance;
     }

@@ -13,7 +13,10 @@ import com.sun.net.httpserver.HttpHandler
 import org.bukkit.BanList
 import java.io.OutputStream
 
-class RequestHandler : HttpHandler {
+/**
+ * Classe per gestire le richieste verso l'url definito in `output.path`
+ */
+internal class RequestHandler : HttpHandler {
     override fun handle(exchange: HttpExchange?) {
         val banList = BanLister()
         val out = JsonObject()
@@ -33,10 +36,12 @@ class RequestHandler : HttpHandler {
         }
 
 
-        //imposto la risposta
+        //imposto gli header per consentire le richieste AJAX
         exchange?.responseHeaders?.set("Content-Type", "application/json; charset=UTF-8")
         exchange?.responseHeaders?.set("Access-Control-Allow-Origin", "*")
         exchange?.sendResponseHeaders(200, out.toString().toByteArray().size.toLong())
+
+        //apro l'outputstream
         val os: OutputStream? = exchange?.responseBody
         os?.write(out.toString().toByteArray())
         os?.close()

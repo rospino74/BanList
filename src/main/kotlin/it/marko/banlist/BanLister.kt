@@ -10,9 +10,20 @@ package it.marko.banlist
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import org.bukkit.BanList
+import org.bukkit.BanEntry
 import org.bukkit.Bukkit
 
-class BanLister {
+/**
+ * Classe che permette di avere in un formato diverso tutte le [BanEntry] fornite da [Bukkit.getBanList]
+ */
+internal class BanLister {
+    /**
+     * Fornisce una lista in [JsonArray] contenente i dati di un [BanEntry]
+     *
+     * @param type Tipo di ban da elencare
+     * @return Ritorna un [array][JsonArray] di [oggetti json][JsonObject]
+     * @see BanList.Type
+     */
     fun getJSON(type: BanList.Type): JsonArray {
         val out = JsonArray()
         val banList = Bukkit.getBanList(type).banEntries
