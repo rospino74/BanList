@@ -2,7 +2,7 @@
 ## Cos'è questo BanList?
 BanList è un semplicissimo plugin per _Spigot/Bukkit_ che ti permette di avere in formato JSON la lista di utenti bannati nel tuo server Minecraft, sia per indirizzo IP che per username!
 ## Storia di BanList
-Un giorno non sapevo che fare a causa del coronavirus 🦠 e allora ho perso quaranta minuti della mia vita a realizzare il plugin...
+Un giorno, non sapendo cosa fare a causa del coronavirus 🦠, ho perso quaranta minuti della mia vita a realizzare il plugin...
 ## Come si installa?
 ### Utenti base
 * Scarica l'[ultima relase](https://github.com/rospino74/BanList/releases/latest)
@@ -33,7 +33,7 @@ show:
       {
          "name":"MemoryOfLife",
          "until":1585564044000,
-		 "forever":false,
+         "forever":false,
          "created":1585564034000,
          "admin":"MemoryOfLife",
          "reason":"Sparisci dal mio server, Canaglia!"
@@ -43,7 +43,7 @@ show:
     {
          "name":"127.0.0.1",
          "until":0,
-		 "forever":true,
+         "forever":true,
          "created":1585564034000,
          "admin":"MemoryOfLife",
          "reason":"Sparisci dal mio server, Canaglia!"
