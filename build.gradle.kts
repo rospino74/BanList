@@ -25,7 +25,7 @@ buildscript {
 }
 
 group = "it.marko.banlist"
-version = "1.0.1-STABLE"
+version = "1.0.2"
 
 apply(plugin = "com.github.johnrengelman.shadow")
 apply(plugin = "java")
@@ -34,12 +34,15 @@ repositories {
     mavenCentral()
     jcenter()
     maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
+    maven { url = uri("https://papermc.io/repo/repository/maven-public/") }
     maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
+    maven { url = uri("https://ci.ender.zone/plugin/repository/everything/") }
     maven { url = uri("https://plugins.gradle.org/m2/") }
 }
 
 dependencies {
-    implementation("org.spigotmc:spigot-api:1.15.2-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.15.2-R0.1-SNAPSHOT")
+    compileOnly("net.ess3:EssentialsX:2.17.2")
     implementation(kotlin("stdlib-jdk8"))
 }
 val compileKotlin: KotlinCompile by tasks
