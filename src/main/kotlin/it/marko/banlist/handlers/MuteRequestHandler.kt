@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2020 MemoryOfLife
- * This file (BanRequestHandler.kt) and its related project (BanList) are governed by the Apache 2.0 license.
+ * This file (MuteRequestHandler.kt) and its related project (BanList) are governed by the Apache 2.0 license.
  * You may not use them except in compliance with the License which can be found at:
  * http://www.apache.org/licenses/LICENSE-2.0
  */
