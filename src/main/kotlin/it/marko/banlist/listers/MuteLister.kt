@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2020MemoryOfLife
- * This file (BanLister.kt) and its related project (BanList) are governed by the Apache 2.0 license.
+ * Copyright (c) 2020 MemoryOfLife
+ * This file (MuteLister.kt) and its related project (BanList) are governed by the Apache 2.0 license.
  * You may not use them except in compliance with the License which can be found at:
  * http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -13,6 +13,7 @@ import com.google.gson.JsonObject
 import org.bukkit.BanEntry
 import org.bukkit.BanList
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 
 /**
  * Classe che permette di avere in un formato diverso tutte le [BanEntry] fornite da [Bukkit.getBanList]
@@ -30,10 +31,10 @@ internal class MuteLister {
     fun getJSON(): JsonArray {
         val out = JsonArray()
 
-        //itero i player online per vedere chi è mutato
-        Bukkit.getOnlinePlayers().forEach {
+		//itero i player per vedere chi è mutato
+        Bukkit.getOfflinePlayers().forEach {
             //user
-            val user = essentials.getUser(it)
+            val user = essentials.getUser(it as Player)
 
             //se l'utente non è mutato ritorno
             if (!user.isMuted) return@forEach
