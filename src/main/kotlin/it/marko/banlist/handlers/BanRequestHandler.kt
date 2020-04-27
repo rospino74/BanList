@@ -1,22 +1,24 @@
 /*
  * Copyright (c) 2020 MemoryOfLife
- * This file (RequestHandler.kt) and its related project (BanList) are governed by the Apache 2.0 license.
+ * This file (BanRequestHandler.kt) and its related project (BanList) are governed by the Apache 2.0 license.
  * You may not use them except in compliance with the License which can be found at:
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package it.marko.banlist
+package it.marko.banlist.handlers
 
 import com.google.gson.JsonObject
 import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpHandler
+import it.marko.banlist.Main
+import it.marko.banlist.listers.BanLister
 import org.bukkit.BanList
 import java.io.OutputStream
 
 /**
- * Classe per gestire le richieste verso l'url definito in `output.path`
+ * Classe per gestire le richieste verso l'url definito in `output.ban.path`
  */
-internal class RequestHandler : HttpHandler {
+internal class BanRequestHandler : HttpHandler {
     override fun handle(exchange: HttpExchange?) {
         val banList = BanLister()
         val out = JsonObject()
