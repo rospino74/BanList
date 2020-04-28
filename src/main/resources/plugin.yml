@@ -4,3 +4,5 @@ version: "1.0.1"
 author: "MemoryOfLife"
 description: "Restituisce in formato JSON la lista ban"
 api-version: "1.15"
+softdepend:
+  - Freezer
