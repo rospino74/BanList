@@ -26,7 +26,18 @@ internal class FreezeLister {
     fun getJSON(): JsonArray {
         val out = JsonArray()
 
-        val players = f.getFreezedPlayers()
+        val players = f.getFreezedPlayers().getStringList("freezed") as List<String>
+
+        players.forEach {
+            val p = Bukkit.getPlayer(it) ?: return@forEach
+            val obj = JsonObject()
+
+            //salvo il nome in un oggetto json
+            obj.addProperty("name", p.name)
+
+            //aggiungo obj a out
+            out.add(obj)
+        }
 
         return out
     }
