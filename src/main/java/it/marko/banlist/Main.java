@@ -8,6 +8,9 @@
 package it.marko.banlist;
 
 import com.sun.net.httpserver.HttpServer;
+import it.marko.banlist.handlers.BanRequestHandler;
+import it.marko.banlist.handlers.FreezeRequestHandler;
+import it.marko.freezer.Freezer;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -26,6 +29,7 @@ public class Main extends JavaPlugin {
     public static final String PREFIX = ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "[BanList] " + ChatColor.RESET;
     private static Main instance;
     private HttpServer server;
+    private boolean isFreezeEnabled;
 
     @Override
     public void onDisable() {
@@ -48,28 +52,46 @@ public class Main extends JavaPlugin {
         //salvo i config di default
         saveDefaultConfig();
 
+        //deve essere abilitato il freeze?
+        Freezer f = (Freezer) getServer().getPluginManager().getPlugin("Freezer");
+        if (f == null) {
+            //avviso che essentials non è installato
+            getLogger().warning("Freezer non è installato! Non potrai vedere i player mutati");
+
+            //imposto la variabile
+            isFreezeEnabled = false;
+        } else isFreezeEnabled = getConfig().getBoolean("show.freeze");
+
         //avvio il server in un runnable
         new BukkitRunnable() {
             @Override
             public void run() {
                 try {
                     //prendo i dati
-                    String path = getConfig().getString("output.path");
-                    int port = getConfig().getInt("output.port");
+                    String banPath = getConfig().getString("output.ban.path");
 
-                    //creo il server
-                    buildHTTPServer(path, port);
+                    //creo il server con la porta definita in output.port
+                    buildHTTPServer(getConfig().getInt("output.port"));
+
+                    //aggiungo un route per ban
+                    server.createContext(banPath, new BanRequestHandler());
+
+                    //se attivo il freeze lo carico
+                    if (isFreezeEnabled) {
+                        String freezePath = getConfig().getString("output.path.freeze");
+                        server.createContext(freezePath, new FreezeRequestHandler());
+                    }
                 } catch (IOException | YAMLException e) {
                     //stampo l'errore
-                    getLogger().log(Level.SEVERE, PREFIX + "Errore nel creare il server");
+                    getLogger().severe(PREFIX + "Errore nel creare il server");
 
                     //fornisco una breve spiegazione se l'eccezione è un'instanza di YAMLException
                     if (e instanceof YAMLException)
-                        getLogger().log(Level.SEVERE, PREFIX + "Sembra che il file di configurazione non sia valido!");
+                        getLogger().severe(PREFIX + "Sembra che il file di configurazione non sia valido!");
 
                     //stampo un blocco con lo stackTrace
                     getLogger().log(Level.SEVERE, ChatColor.RED + "" + ChatColor.BOLD + "===== " + PREFIX + ChatColor.RED + "" + ChatColor.BOLD + "Inizio Report =====", e);
-                    getLogger().log(Level.SEVERE, ChatColor.RED + "" + ChatColor.BOLD + "===== Fine Report =====");
+                    getLogger().severe(ChatColor.RED + "" + ChatColor.BOLD + "===== Fine Report =====");
                 }
             }
         }.runTaskAsynchronously(this);
@@ -78,21 +100,21 @@ public class Main extends JavaPlugin {
 
     /**
      * Crea un'instanza del server HTTP
-     * @param path Percorso da utilizzare per la creazione del server
      * @param port Porta da utilizzare per la creazione del server
      * @throws IOException Lancia una {@link IOException} se si verifica un errore nella creazione del server
      *
      * @see #stopHTTPServer()
      */
-    private void buildHTTPServer(String path, int port) throws IOException {
+    private HttpServer buildHTTPServer(int port) throws IOException {
         server = HttpServer.create(new InetSocketAddress(port), 0);
-        server.createContext(path, new RequestHandler());
         server.setExecutor(null);
-        server.start();
+
+        //ritorno il server
+        return server;
     }
 
     /**
-     * Ferma il server creato con {@link #buildHTTPServer(String, int)}
+     * Ferma il server creato con {@link #buildHTTPServer(int)}
      */
     private void stopHTTPServer() {
         server.stop(0);
