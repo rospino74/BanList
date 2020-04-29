@@ -9,11 +9,8 @@ package it.marko.banlist.handlers
 
 import com.google.gson.JsonObject
 import com.sun.net.httpserver.HttpExchange
-import com.sun.net.httpserver.HttpHandler
 import it.marko.banlist.Main
 import it.marko.banlist.listers.BanLister
-import org.bukkit.BanList
-import java.io.OutputStream
 import org.bukkit.BanList
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.OutputStream
