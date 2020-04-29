@@ -6,6 +6,7 @@ Un giorno, non sapendo cosa fare a causa del coronavirus 🦠, ho perso quaranta
 ## Come si installa?
 ### Requisiti
 Il plugin [Essentials](https://github.com/EssentialsX/Essentials) è necessario per visualizzare gli utenti mutati, ma ritengo che questo ottimo plugin tu lo abbia già installato!
+Inoltre, se vuoi vedere la lista di utenti congelati, installa il mio plugin [Freezer](https://github.com/rospino74/Freezer). 
 ### Utenti base
 * Scarica l'[ultima relase](https://github.com/rospino74/BanList/releases/latest)
 * Sposta il file `BanList-<version>.jar` nella cartella `plugins` del tuo server Minecraft
@@ -27,6 +28,7 @@ show:
     byIP: true
     byNAME: true
   mute: true
+  freeze: true
 ```
 * `output.path.ban`: Directory alla quale il server mostrerà come output la lista di utenti bannati
 * `output.path.mute`: Directory alla quale il server mostrerà come output la lista di utenti mutati
@@ -34,6 +36,7 @@ show:
 * `show.ban.byIP`: Il plugin deve mostrate gli utenti bannati per indirizzo IP?
 * `show.ban.byNAME`: Il plugin deve mostrate gli utenti bannati per username?
 * `show.mute`: Il plugin deve mostrate gli utenti mutati? Se si è necessario il plugin [Essentials](https://github.com/EssentialsX/Essentials)
+* `show.freeze`: Il plugin deve mostrate gli utenti congelati? Se si è necessario il plugin [Freezer](https://github.com/rospino74/Freezer)
 ## Output Ban di esempio
 ```json
 {
@@ -86,6 +89,19 @@ show:
 | `until` | `int` | Data del termine del mute. È una data formato Unix |
 | `forever` | `bool` | Se è `true` il mute è permanente |
 | `reason` | `String` | Motivo del mute |
+## Output Freeze di esempio
+```json
+{
+   "freeze": [
+      {
+         "name":"MemoryOfLife"
+      }
+   ]
+}
+```
+| Chiave | Tipo | Significato |
+| :--- | :---: | --- |
+| `name` | `String` | Nome del player congelato |
 ## Errori comuni
 * `java.net.BindException`: La porta scelta è già in uso, cambiarla nel file di configurazione
 * `java.io.IOException`: Si è verificato un errore nel comunicare con un altro sistema
