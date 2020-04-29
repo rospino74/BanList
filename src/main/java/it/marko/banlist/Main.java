@@ -18,6 +18,8 @@ import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
 public class Main extends JavaPlugin {
@@ -36,7 +38,7 @@ public class Main extends JavaPlugin {
         super.onDisable();
 
         //fermo il server
-        stopHTTPServer();
+        stopHTTPServer(1);
 
         //rimuovo l'instanza
         Main.instance = null;
@@ -67,12 +69,11 @@ public class Main extends JavaPlugin {
             @Override
             public void run() {
                 try {
-                    //prendo i dati
-                    String banPath = getConfig().getString("output.ban.path");
-
                     //creo il server con la porta definita in output.port
-                    buildHTTPServer(getConfig().getInt("output.port"));
+                    buildHTTPServer(getConfig().getInt("output.port"), Executors.newCachedThreadPool());
 
+                    //prendo il ban path
+                    String banPath = getConfig().getString("output.path.ban");
                     //aggiungo un route per ban
                     server.createContext(banPath, new BanRequestHandler());
 
@@ -81,17 +82,17 @@ public class Main extends JavaPlugin {
                         String freezePath = getConfig().getString("output.path.freeze");
                         server.createContext(freezePath, new FreezeRequestHandler());
                     }
-                } catch (IOException | YAMLException e) {
-                    //stampo l'errore
-                    getLogger().severe(PREFIX + "Errore nel creare il server");
 
+                    //avvio il server
+                    printInfo("Avvio il server");
+                    server.start();
+                } catch (IOException | YAMLException e) {
                     //fornisco una breve spiegazione se l'eccezione è un'instanza di YAMLException
                     if (e instanceof YAMLException)
-                        getLogger().severe(PREFIX + "Sembra che il file di configurazione non sia valido!");
+                        getLogger().severe("Sembra che il file di configurazione non sia valido!");
 
-                    //stampo un blocco con lo stackTrace
-                    getLogger().log(Level.SEVERE, ChatColor.RED + "" + ChatColor.BOLD + "===== " + PREFIX + ChatColor.RED + "" + ChatColor.BOLD + "Inizio Report =====", e);
-                    getLogger().severe(ChatColor.RED + "" + ChatColor.BOLD + "===== Fine Report =====");
+                    //stampo l'errore
+                    printError(e);
                 }
             }
         }.runTaskAsynchronously(this);
@@ -100,24 +101,38 @@ public class Main extends JavaPlugin {
 
     /**
      * Crea un'instanza del server HTTP
-     * @param port Porta da utilizzare per la creazione del server
-     * @throws IOException Lancia una {@link IOException} se si verifica un errore nella creazione del server
      *
-     * @see #stopHTTPServer()
+     * @param port Porta da utilizzare per la creazione del server
+     * @param executor Processo sul quale eseguire il server
+     * @throws IOException Lancia una {@link IOException} se si verifica un errore nella creazione del server
+     * @see #stopHTTPServer(int)
      */
-    private HttpServer buildHTTPServer(int port) throws IOException {
+    private HttpServer buildHTTPServer(int port, Executor executor) throws IOException {
+        //avviso
+        printInfo("Creo il server sulla porta " + port);
+
         server = HttpServer.create(new InetSocketAddress(port), 0);
-        server.setExecutor(null);
+        server.setExecutor(executor);
 
         //ritorno il server
         return server;
     }
 
     /**
-     * Ferma il server creato con {@link #buildHTTPServer(int)}
+     * Ferma il server creato con {@link #buildHTTPServer(int, Executor)}
+     *
+     * @param errCode messaggio di errore
      */
-    private void stopHTTPServer() {
-        server.stop(0);
+    private void stopHTTPServer(int errCode) {
+        //se il server non esiste ritorno
+        if (server == null)
+            return;
+
+        //avviso
+        printInfo("Fermo il server");
+
+        //fermo il server
+        server.stop(errCode);
     }
 
     /**
@@ -128,5 +143,80 @@ public class Main extends JavaPlugin {
      */
     public static Main getInstance() {
         return instance;
+    }
+
+    /**
+     * Stampo l'errore in un box
+     *
+     * @param level     Livello di logging
+     * @param reason    Motivo dell'errore
+     * @param throwable Eccezione causa dell'errore
+     * @see #printError(Throwable)
+     * @see #printError(String, Throwable)
+     * @see #printError(String)
+     * @see #printInfo(String)
+     */
+    public void printError(Level level, String reason, Throwable throwable) {
+        //stampo l'errore se reason != null
+        if (reason != null)
+            getLogger().log(level, reason);
+
+        //stampo un blocco con lo stackTrace se throwable != null
+        if (throwable != null) {
+            getLogger().log(level, "========== Inizio Report ==========", throwable);
+            getLogger().log(level, "==========  Fine Report  ==========");
+        }
+    }
+
+    /**
+     * Stampo l'errore in un box con livello {@link Level#SEVERE}
+     *
+     * @param reason    Motivo dell'errore
+     * @param throwable Eccezione causa dell'errore
+     * @see #printError(Throwable)
+     * @see #printError(Level, String, Throwable)
+     * @see #printError(String)
+     * @see #printInfo(String)
+     */
+    public void printError(String reason, Throwable throwable) {
+        printError(Level.SEVERE, reason, throwable);
+    }
+
+    /**
+     * Stampo l'eccezione in un box con livello {@link Level#SEVERE}
+     *
+     * @param throwable Eccezione causa dell'errore
+     * @see #printError(String, Throwable)
+     * @see #printError(Level, String, Throwable)
+     * @see #printError(String)
+     * @see #printInfo(String)
+     */
+    public void printError(Throwable throwable) {
+        printError(Level.SEVERE, null, throwable);
+    }
+
+    /**
+     * Stampo l'errore in un box con livello {@link Level#WARNING}
+     *
+     * @param reason Motivo dell'errore
+     * @see #printError(String, Throwable)
+     * @see #printError(Level, String, Throwable)
+     * @see #printError(Throwable)
+     * @see #printInfo(String)
+     */
+    public void printError(String reason) {
+        printError(reason, null);
+    }
+
+    /**
+     * Stampo un messaggio in un box con livello {@link Level#INFO}
+     *
+     * @param reason Messaggio da stampare
+     * @see #printError(String, Throwable)
+     * @see #printError(Level, String, Throwable)
+     * @see #printError(Throwable)
+     */
+    public void printInfo(String reason) {
+        printError(Level.INFO, reason, null);
     }
 }
