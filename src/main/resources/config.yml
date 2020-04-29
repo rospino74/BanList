@@ -1,8 +1,8 @@
 output:
   path:
     ban: "/ban"
-    mute: "/freeze"
-  freeze: 80
+    freeze: "/freeze"
+  port: 80
 show:
   ban:
     byIP: true
