@@ -9,8 +9,11 @@ package it.marko.banlist.handlers
 
 import com.google.gson.JsonObject
 import com.sun.net.httpserver.HttpExchange
+import com.sun.net.httpserver.HttpHandler
 import it.marko.banlist.Main
 import it.marko.banlist.listers.BanLister
+import org.bukkit.BanList
+import java.io.OutputStream
 import org.bukkit.BanList
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.OutputStream
@@ -35,8 +38,10 @@ internal class BanRequestHandler : RequestHandler() {
         val out = JsonObject()
 
         //mostrare i ban per ip?
+
         val showIP = main.config.getBoolean("show.ban.byIP", true)
         val showNAME = main.config.getBoolean("show.ban.byNAME", true)
+
 
         //json di ban per ip e nomi
         if (showNAME) {

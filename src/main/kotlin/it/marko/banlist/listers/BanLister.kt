@@ -9,8 +9,8 @@ package it.marko.banlist.listers
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import org.bukkit.BanList
 import org.bukkit.BanEntry
+import org.bukkit.BanList
 import org.bukkit.Bukkit
 
 /**

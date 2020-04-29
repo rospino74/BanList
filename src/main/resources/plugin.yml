@@ -2,7 +2,8 @@ main: it.marko.banlist.Main
 name: "BanList"
 version: "1.0.2-BETA"
 author: "MemoryOfLife"
-description: "Restituisce in formato JSON la lista ban"
+description: "Restituisce in formato JSON la lista dei ban e mute"
 api-version: "1.15"
 softdepend:
+  - Essentials
   - Freezer
