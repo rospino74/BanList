@@ -31,7 +31,7 @@ internal class MuteLister {
     fun getJSON(): JsonArray {
         val out = JsonArray()
 
-		//itero i player per vedere chi è mutato
+        //itero i player per vedere chi è mutato
         Bukkit.getOnlinePlayers().forEach {
             //user
             val user = essentials.getUser(it as Player)

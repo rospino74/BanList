@@ -10,8 +10,8 @@ package it.marko.banlist;
 import com.earth2me.essentials.Essentials;
 import com.sun.net.httpserver.HttpServer;
 import it.marko.banlist.handlers.BanRequestHandler;
-import it.marko.banlist.handlers.MuteRequestHandler;
 import it.marko.banlist.handlers.FreezeRequestHandler;
+import it.marko.banlist.handlers.MuteRequestHandler;
 import it.marko.freezer.Freezer;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -67,7 +67,7 @@ public class Main extends JavaPlugin {
             //imposto la variabile
             isMutedEnabled = false;
         } else isMutedEnabled = getConfig().getBoolean("show.mute");
-      
+
         //deve essere abilitato il freeze?
         Freezer f = (Freezer) getServer().getPluginManager().getPlugin("Freezer");
         if (f == null) {
@@ -96,8 +96,8 @@ public class Main extends JavaPlugin {
                         String freezePath = getConfig().getString("output.path.freeze");
                         server.createContext(freezePath, new FreezeRequestHandler());
                     }
-                  
-                  //se attivo il mute lo carico
+
+                    //se attivo il mute lo carico
                     if (isMutedEnabled) {
                         String mute_path = getConfig().getString("output.path.mute");
                         server.createContext(mute_path, new MuteRequestHandler());
@@ -122,7 +122,7 @@ public class Main extends JavaPlugin {
     /**
      * Crea un'instanza del server HTTP
      *
-     * @param port Porta da utilizzare per la creazione del server
+     * @param port     Porta da utilizzare per la creazione del server
      * @param executor Processo sul quale eseguire il server
      * @throws IOException Lancia una {@link IOException} se si verifica un errore nella creazione del server
      * @see #stopHTTPServer(int)
