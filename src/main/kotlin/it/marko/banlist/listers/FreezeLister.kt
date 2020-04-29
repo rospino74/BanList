@@ -11,6 +11,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import it.marko.freezer.Freezer
 import org.bukkit.Bukkit
+import java.util.*
 
 /**
  * Classe che permette di avere in un formato diverso tutti player freezati
@@ -29,7 +30,7 @@ internal class FreezeLister {
         val players = f.getFreezedPlayers().getStringList("freezed") as List<String>
 
         players.forEach {
-            val p = Bukkit.getPlayer(it) ?: return@forEach
+            val p = Bukkit.getPlayer(UUID.fromString(it)) ?: return@forEach
             val obj = JsonObject()
 
             //salvo il nome in un oggetto json
