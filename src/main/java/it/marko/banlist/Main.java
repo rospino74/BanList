@@ -7,8 +7,10 @@
 
 package it.marko.banlist;
 
+import com.earth2me.essentials.Essentials;
 import com.sun.net.httpserver.HttpServer;
 import it.marko.banlist.handlers.BanRequestHandler;
+import it.marko.banlist.handlers.MuteRequestHandler;
 import it.marko.banlist.handlers.FreezeRequestHandler;
 import it.marko.freezer.Freezer;
 import org.bukkit.ChatColor;
@@ -31,7 +33,9 @@ public class Main extends JavaPlugin {
     public static final String PREFIX = ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "[BanList] " + ChatColor.RESET;
     private static Main instance;
     private HttpServer server;
+    private boolean isMutedEnabled;
     private boolean isFreezeEnabled;
+
 
     @Override
     public void onDisable() {
@@ -48,12 +52,22 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         super.onEnable();
 
-        //assegno l'instanza
+        //assegno l'istanza
         Main.instance = this;
 
         //salvo i config di default
         saveDefaultConfig();
 
+        //deve essere abilitato il mute?
+        Essentials e = (Essentials) getServer().getPluginManager().getPlugin("Essentials");
+        if (e == null) {
+            //avviso che essentials non è installato
+            getLogger().warning("Essentials non è installato! Non potrai vedere i player mutati");
+
+            //imposto la variabile
+            isMutedEnabled = false;
+        } else isMutedEnabled = getConfig().getBoolean("show.mute");
+      
         //deve essere abilitato il freeze?
         Freezer f = (Freezer) getServer().getPluginManager().getPlugin("Freezer");
         if (f == null) {
@@ -81,6 +95,12 @@ public class Main extends JavaPlugin {
                     if (isFreezeEnabled) {
                         String freezePath = getConfig().getString("output.path.freeze");
                         server.createContext(freezePath, new FreezeRequestHandler());
+                    }
+                  
+                  //se attivo il mute lo carico
+                    if (isMutedEnabled) {
+                        String mute_path = getConfig().getString("output.path.mute");
+                        server.createContext(mute_path, new MuteRequestHandler());
                     }
 
                     //avvio il server
@@ -136,7 +156,7 @@ public class Main extends JavaPlugin {
     }
 
     /**
-     * Usa questo medoto per ottenere l'istanza della classe {@link Main}
+     * Usa questo metodo per ottenere l'istanza della classe {@link Main}
      *
      * @return L'istanza corrente del plugin
      * @see JavaPlugin
