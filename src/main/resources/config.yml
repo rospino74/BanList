@@ -1,6 +1,10 @@
 output:
-  path: "/ban"
+  path:
+    ban: "/ban"
+    freeze: "/freeze"
   port: 80
 show:
-  byIP: true
-  byNAME: true
+  ban:
+    byIP: true
+    byNAME: true
+  freeze: true
