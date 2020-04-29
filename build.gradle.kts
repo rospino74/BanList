@@ -15,17 +15,14 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
-        maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
-        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
     }
     dependencies {
         classpath("com.github.jengelman.gradle.plugins:shadow:5.2.0")
-        classpath("org.spigotmc:spigot-api:1.15.2-R0.1-SNAPSHOT")
     }
 }
 
 group = "it.marko.banlist"
-version = "1.0.2"
+version = "1.0.2-BETA"
 
 apply(plugin = "com.github.johnrengelman.shadow")
 apply(plugin = "java")
@@ -44,7 +41,9 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.15.2-R0.1-SNAPSHOT")
     compileOnly("net.ess3:EssentialsX:2.17.2")
     implementation(kotlin("stdlib-jdk8"))
+    compileOnly(fileTree("libs") { include("*.jar") })
 }
+
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions {
     jvmTarget = "1.8"
