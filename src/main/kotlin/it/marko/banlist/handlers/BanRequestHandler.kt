@@ -9,9 +9,8 @@ package it.marko.banlist.handlers
 
 import com.google.gson.JsonObject
 import com.sun.net.httpserver.HttpExchange
-import it.marko.banlist.Main
-import it.marko.banlist.listers.BanLister
 import org.bukkit.BanList
+import it.marko.banlist.listers.BanLister
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.OutputStream
 
@@ -20,7 +19,7 @@ import java.io.OutputStream
  */
 internal class BanRequestHandler : RequestHandler() {
     //istanza di Main
-    private val main: JavaPlugin = Main.getInstance()
+    private val main: JavaPlugin = it.marko.banlist.BanList.getInstance()
 
     override fun handle(exchange: HttpExchange?) {
         //se exchange == null esco

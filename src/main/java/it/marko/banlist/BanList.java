@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2020 MemoryOfLife
- * This file (Main.java) and its related project (BanList) are governed by the Apache 2.0 license.
+ * This file (BanList.java) and its related project (BanList) are governed by the Apache 2.0 license.
  * You may not use them except in compliance with the License which can be found at:
  * http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -24,14 +24,14 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
-public class Main extends JavaPlugin {
+public class BanList extends JavaPlugin {
     /**
      * Prefisso del plugin per messaggi in chat. Utilizza i {@link ChatColor color codes} di Bukkit.
      *
      * @see ChatColor
      */
     public static final String PREFIX = ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "[BanList] " + ChatColor.RESET;
-    private static Main instance;
+    private static BanList instance;
     private HttpServer server;
     private boolean isMutedEnabled;
     private boolean isFreezeEnabled;
@@ -45,7 +45,7 @@ public class Main extends JavaPlugin {
         stopHTTPServer(1);
 
         //rimuovo l'instanza
-        Main.instance = null;
+        BanList.instance = null;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class Main extends JavaPlugin {
         super.onEnable();
 
         //assegno l'istanza
-        Main.instance = this;
+        BanList.instance = this;
 
         //salvo i config di default
         saveDefaultConfig();
@@ -156,12 +156,12 @@ public class Main extends JavaPlugin {
     }
 
     /**
-     * Usa questo metodo per ottenere l'istanza della classe {@link Main}
+     * Usa questo metodo per ottenere l'istanza della classe {@link BanList}
      *
      * @return L'istanza corrente del plugin
      * @see JavaPlugin
      */
-    public static Main getInstance() {
+    public static BanList getInstance() {
         return instance;
     }
 

@@ -1,4 +1,4 @@
-main: it.marko.banlist.Main
+main: it.marko.banlist.BanList
 name: "BanList"
 version: "1.0.2-BETA"
 author: "MemoryOfLife"

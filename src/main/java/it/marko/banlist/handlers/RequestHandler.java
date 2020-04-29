@@ -9,7 +9,7 @@ package it.marko.banlist.handlers;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import it.marko.banlist.Main;
+import it.marko.banlist.BanList;
 
 import java.io.IOException;
 
@@ -18,14 +18,14 @@ public abstract class RequestHandler implements HttpHandler {
     public abstract void handle(HttpExchange httpExchange) throws IOException;
 
     protected void log(String reason, Throwable throwable) {
-        Main.getInstance().printError(reason, throwable);
+        BanList.getInstance().printError(reason, throwable);
     }
 
     protected void log(Throwable throwable) {
-        Main.getInstance().printError(throwable);
+        BanList.getInstance().printError(throwable);
     }
 
     protected void log(String reason) {
-        Main.getInstance().printInfo(reason);
+        BanList.getInstance().printInfo(reason);
     }
 }
