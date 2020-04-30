@@ -1,12 +1,27 @@
+# Percorsi in cui mostrare l'output
 output:
   path:
     ban: "/ban"
-    mute: "/mute"
     freeze: "/freeze"
+    essentials:
+      mute: "/mute"
+      jail: "/jail"
+    vault:
+      permissions: "/permissions"
+      economy: "/economy"
   port: 80
+
+# Cosa devo mostrare?
 show:
   ban:
     byIP: true
     byNAME: true
-  mute: true
+  essentials:
+    mute: true
+    jail: true
   freeze: true
+  vault:
+    permissions: true
+    economy:
+      banks: true
+      balances: true

@@ -6,7 +6,7 @@ Un giorno, non sapendo cosa fare a causa del coronavirus 🦠, ho perso quaranta
 ## Come si installa?
 ### Requisiti
 Il plugin [Essentials](https://github.com/EssentialsX/Essentials) è necessario per visualizzare gli utenti mutati, ma ritengo che questo ottimo plugin tu lo abbia già installato!
-Inoltre, se vuoi vedere la lista di utenti congelati, installa il mio plugin [Freezer](https://github.com/rospino74/Freezer). 
+Inoltre, se vuoi vedere la lista di utenti congelati, installa il mio plugin [Freezer](https://github.com/rospino74/Freezer). Non ti basta ancora? Con [Vault](https://github.com/MilkBowl/Vault) installato potrai addirittura ottenere i gruppi di utenti e i loro bilanci!
 ### Utenti base
 * Scarica l'[ultima relase](https://github.com/rospino74/BanList/releases/latest)
 * Sposta il file `BanList-<version>.jar` nella cartella `plugins` del tuo server Minecraft
@@ -18,26 +18,51 @@ Inoltre, se vuoi vedere la lista di utenti congelati, installa il mio plugin [Fr
 ## Configurazione
 La configurazione di default del plugin è questa:
 ```yaml
+# Percorsi in cui mostrare l'output
 output:
   path:
     ban: "/ban"
-    mute: "/mute"
+    freeze: "/freeze"
+    essentials:
+      mute: "/mute"
+      jail: "/jail"
+    vault:
+      permissions: "/permissions"
+      economy: "/economy"
   port: 80
+
+# Cosa devo mostrare?
 show:
   ban:
     byIP: true
     byNAME: true
-  mute: true
+  essentials:
+    mute: true
+    jail: true
   freeze: true
+  vault:
+    permissions: true
+    economy:
+      banks: true
+      balances: true
+
 ```
 * `output.path.ban`: Directory alla quale il server mostrerà come output la lista di utenti bannati
-* `output.path.mute`: Directory alla quale il server mostrerà come output la lista di utenti mutati
-* `output.port`: Porta sulla quale il server comunicherà, ricordati che la porta deve essere aperta e libera da altri servizi
+* `output.path.freeze`: Directory alla quale il server mostrerà come output la lista di utenti congelati
+* `output.path.essentials.mute`: Directory alla quale il server mostrerà come output la lista di utenti mutati
+* `output.path.essentials.jail`: Directory alla quale il server mostrerà come output la lista di utenti reclusi
+* `output.path.vault.permissions`: Directory alla quale il server mostrerà come output la lista di permessi
+* `output.path.vault.economy`: Directory alla quale il server mostrerà come output informazioni sull'economia
+* `output.port`: Porta sulla quale il server comunicherà. Ricordati che la porta deve essere aperta e libera da altri servizi
 * `show.ban.byIP`: Il plugin deve mostrate gli utenti bannati per indirizzo IP?
 * `show.ban.byNAME`: Il plugin deve mostrate gli utenti bannati per username?
-* `show.mute`: Il plugin deve mostrate gli utenti mutati? Se si è necessario il plugin [Essentials](https://github.com/EssentialsX/Essentials)
+* `show.essentials.mute`: Il plugin deve mostrate gli utenti mutati? Se si è necessario il plugin [Essentials](https://github.com/EssentialsX/Essentials)
+* `show.essentials.jail`: Il plugin deve mostrate gli utenti reclusi? Se si è necessario il plugin [Essentials](https://github.com/EssentialsX/Essentials)
 * `show.freeze`: Il plugin deve mostrate gli utenti congelati? Se si è necessario il plugin [Freezer](https://github.com/rospino74/Freezer)
-## Output Ban di esempio
+* `show.vault.permissions`: Il plugin deve mostrate i gruppi? Se si è necessario il plugin [Vault](https://github.com/MilkBowl/Vault)
+* `show.vault.economy`: Il plugin deve mostrate i gruppi? Se si è necessario il plugin [Vault](https://github.com/MilkBowl/Vault)
+## Output di esempio
+### Ban
 ```json
 {
    "byNAME": [
@@ -70,7 +95,7 @@ show:
 | `created` | `int` | Data di creazione del ban. È una data formato Unix |
 | `admin` | `String` | Nome del admin che ha effetuato il ban. Può essere il nome di un player o `Server` se il ban è eseguito dalla console |
 | `reason` | `String` | Motivo del ban |
-## Output Mute di esempio
+### Mute
 ```json
 {
    "mute": [
@@ -89,7 +114,7 @@ show:
 | `until` | `int` | Data del termine del mute. È una data formato Unix |
 | `forever` | `bool` | Se è `true` il mute è permanente |
 | `reason` | `String` | Motivo del mute |
-## Output Freeze di esempio
+### Freeze
 ```json
 {
    "freeze": [
@@ -102,6 +127,69 @@ show:
 | Chiave | Tipo | Significato |
 | :--- | :---: | --- |
 | `name` | `String` | Nome del player congelato |
+### Permissions
+```json
+{
+  "groups": [
+    {
+      "name": "default",
+      "members": [
+        "MemoryOfLife"
+      ]
+    },
+    {
+      "name": "admin",
+      "members": [
+        "MemoryOfLife"
+      ]
+    }
+  ]
+}
+```
+| Chiave | Tipo | Significato |
+| :--- | :---: | --- |
+| `name` | `String` | Nome del gruppo |
+| `members` | `Array` di `String` | Membri del gruppo |
+### Economy
+```json
+{
+  "balances": [
+    {
+      "name": "MemoryOfLife",
+      "balance": 10000000000000
+    }
+  ],
+  "banks": [
+    {
+      "name": "banca che ho appena derubato",
+      "balance": 0
+    }
+  ]
+}
+```
+| Chiave | Tipo | Significato |
+| :--- | :---: | --- |
+| `name` | `String` | Nome del giocatore o della banca |
+| `balance` | `int` | Bilancio attuale |
+### Jail
+```json
+{
+  "jailed": [
+    {
+      "name": "MemoryOfLife",
+      "until": 1588255790378,
+      "forever": false,
+      "jail": "a"
+    }
+  ]
+}
+```
+| Chiave | Tipo | Significato |
+| :--- | :---: | --- |
+| `name` | `String` | Nome del giocatore |
+| `until` | `int` | Data del termine della prigionia. È una data formato Unix |
+| `forever` | `bool` | Se è `true` la prigionia è permanente |
+| `jail` | `String` | Nome della cella dove il player è prigioniero |
 ## Errori comuni
 * `java.net.BindException`: La porta scelta è già in uso, cambiarla nel file di configurazione
 * `java.io.IOException`: Si è verificato un errore nel comunicare con un altro sistema

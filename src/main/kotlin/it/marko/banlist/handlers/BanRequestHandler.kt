@@ -17,7 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin
  * Classe per gestire le richieste verso l'url definito in `output.path.ban`
  */
 internal class BanRequestHandler : RequestHandler() {
-    //istanza di Main
+    //istanza di BanList
     private val main: JavaPlugin = it.marko.banlist.BanList.getInstance()
 
     override fun onIncomingRequest(exchange: HttpExchange) {
