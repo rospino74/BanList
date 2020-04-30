@@ -11,12 +11,14 @@ import com.earth2me.essentials.Essentials;
 import com.sun.net.httpserver.HttpServer;
 import it.marko.banlist.handlers.BanRequestHandler;
 import it.marko.banlist.handlers.FreezeRequestHandler;
-import it.marko.banlist.handlers.MuteRequestHandler;
-import it.marko.banlist.handlers.PermsRequestHandler;
+import it.marko.banlist.handlers.essentials.MuteRequestHandler;
+import it.marko.banlist.handlers.vault.EconomyRequestHandler;
+import it.marko.banlist.handlers.vault.PermsRequestHandler;
 import it.marko.freezer.Freezer;
+import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.yaml.snakeyaml.error.YAMLException;
@@ -39,6 +41,7 @@ public class BanList extends JavaPlugin {
     private boolean isMutedEnabled;
     private boolean isFreezeEnabled;
     private boolean isPermsEnabled;
+    private boolean isEconomyEnabled;
 
 
     @Override
@@ -82,9 +85,8 @@ public class BanList extends JavaPlugin {
             isFreezeEnabled = false;
         } else isFreezeEnabled = getConfig().getBoolean("show.freeze");
 
-        //deve essere abilitato il pex?
-        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        Permission p = rsp.getProvider();
+        //deve essere abilitato vault permissions?
+        Permission p = getServer().getServicesManager().getRegistration(Permission.class).getProvider();
         if (getServer().getPluginManager().getPlugin("Vault") == null || p == null) {
             //avviso che essentials non è installato
             getLogger().warning("Vault non è installato! Non potrai vedere i gruppi dei player");
@@ -92,6 +94,16 @@ public class BanList extends JavaPlugin {
             //imposto la variabile
             isPermsEnabled = false;
         } else isPermsEnabled = getConfig().getBoolean("show.perms");
+
+        //deve essere abilitato vault economy?
+        Economy economy = getServer().getServicesManager().getRegistration(Economy.class).getProvider();
+        if (getServer().getPluginManager().getPlugin("Vault") == null || economy == null) {
+            //avviso che essentials non è installato
+            getLogger().warning("Vault non è installato! Non potrai vedere i bilanci dei player");
+
+            //imposto la variabile
+            isEconomyEnabled = false;
+        } else isEconomyEnabled = getConfig().getBoolean("show.perms");
 
         //avvio il server in un runnable
         new BukkitRunnable() {
@@ -118,10 +130,16 @@ public class BanList extends JavaPlugin {
                         server.createContext(mutePath, new MuteRequestHandler());
                     }
 
-                    //se attivo pex lo carico
+                    //se attivo vault permissions lo carico
                     if (isPermsEnabled) {
                         String pexPath = getConfig().getString("output.path.perms");
                         server.createContext(pexPath, new PermsRequestHandler());
+                    }
+
+                    //se attivo vault economy lo carico
+                    if (isEconomyEnabled) {
+                        String pexPath = getConfig().getString("output.path.economy");
+                        server.createContext(pexPath, new EconomyRequestHandler());
                     }
 
                     //avvio il server
@@ -181,6 +199,7 @@ public class BanList extends JavaPlugin {
      *
      * @return L'istanza corrente del plugin
      * @see JavaPlugin
+     * @see Plugin
      */
     public static BanList getInstance() {
         return instance;

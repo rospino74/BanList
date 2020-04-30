@@ -1,10 +1,14 @@
+# Percorsi in cui mostrare l'output
 output:
   path:
     ban: "/ban"
     mute: "/mute"
     freeze: "/freeze"
     perms: "/perms"
+    economy: "/economy"
   port: 80
+
+# Cosa devo mostrare?
 show:
   ban:
     byIP: true
@@ -12,3 +16,6 @@ show:
   mute: true
   freeze: true
   perms: true
+  economy:
+    banks: true
+    balances: true
