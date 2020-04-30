@@ -23,14 +23,7 @@ class EconomyRequestHandler : RequestHandler() {
     //istanza di Main
     private val main: JavaPlugin = BanList.getInstance()
 
-    override fun handle(exchange: HttpExchange?) {
-        //se exchange == null esco
-        if (exchange == null)
-            return
-
-        //faccio il log
-        log("Richiesta HTTP ricevuta da '${exchange.remoteAddress}', per il percorso '${exchange.requestURI}'")
-
+    override fun onIncomingRequest(exchange: HttpExchange) {
         //oggetto di out
         val out = JsonObject()
 
@@ -51,14 +44,6 @@ class EconomyRequestHandler : RequestHandler() {
             out.add("banks", banks)
         }
 
-        //imposto gli header per consentire le richieste AJAX
-        exchange.responseHeaders?.set("Content-Type", "application/json; charset=UTF-8")
-        exchange.responseHeaders?.set("Access-Control-Allow-Origin", "*")
-        exchange.sendResponseHeaders(200, out.toString().toByteArray().size.toLong())
-
-        //apro l'outputstream
-        val os: OutputStream? = exchange.responseBody
-        os?.write(out.toString().toByteArray())
-        os?.close()
+        flushData(out.toString())
     }
 }
