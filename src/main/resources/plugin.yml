@@ -8,4 +8,4 @@ api-version: "1.15"
 softdepend:
   - Essentials
   - Freezer
-  - Valut
+  - Vault
