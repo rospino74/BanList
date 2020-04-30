@@ -5,11 +5,12 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package it.marko.banlist.handlers
+package it.marko.banlist.handlers.essentials
 
 import com.google.gson.JsonObject
 import com.sun.net.httpserver.HttpExchange
-import it.marko.banlist.listers.MuteLister
+import it.marko.banlist.handlers.RequestHandler
+import it.marko.banlist.listers.essentials.MuteLister
 import java.io.OutputStream
 
 /**

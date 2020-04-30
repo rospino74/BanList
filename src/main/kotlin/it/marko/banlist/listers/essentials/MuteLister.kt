@@ -5,7 +5,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package it.marko.banlist.listers
+package it.marko.banlist.listers.essentials
 
 import com.earth2me.essentials.Essentials
 import com.google.gson.JsonArray
