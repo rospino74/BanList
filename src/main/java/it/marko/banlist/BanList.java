@@ -11,6 +11,7 @@ import com.earth2me.essentials.Essentials;
 import com.sun.net.httpserver.HttpServer;
 import it.marko.banlist.handlers.BanRequestHandler;
 import it.marko.banlist.handlers.FreezeRequestHandler;
+import it.marko.banlist.handlers.essentials.JailRequestHandler;
 import it.marko.banlist.handlers.essentials.MuteRequestHandler;
 import it.marko.banlist.handlers.vault.EconomyRequestHandler;
 import it.marko.banlist.handlers.vault.PermsRequestHandler;
@@ -39,6 +40,7 @@ public class BanList extends JavaPlugin {
     private static BanList instance;
     private HttpServer server;
     private boolean isMutedEnabled;
+    private boolean isJailedEnabled;
     private boolean isFreezeEnabled;
     private boolean isPermsEnabled;
     private boolean isEconomyEnabled;
@@ -73,7 +75,16 @@ public class BanList extends JavaPlugin {
 
             //imposto la variabile
             isMutedEnabled = false;
-        } else isMutedEnabled = getConfig().getBoolean("show.mute");
+        } else isMutedEnabled = getConfig().getBoolean("show.essentials.mute");
+
+        //deve essere abilitato il jail?
+        if (e == null) {
+            //avviso che essentials non è installato
+            getLogger().warning("Essentials non è installato! Non potrai vedere i player carcerati");
+
+            //imposto la variabile
+            isJailedEnabled = false;
+        } else isJailedEnabled = getConfig().getBoolean("show.essentials.jail");
 
         //deve essere abilitato il freeze?
         Freezer f = (Freezer) getServer().getPluginManager().getPlugin("Freezer");
@@ -93,7 +104,7 @@ public class BanList extends JavaPlugin {
 
             //imposto la variabile
             isPermsEnabled = false;
-        } else isPermsEnabled = getConfig().getBoolean("show.perms");
+        } else isPermsEnabled = getConfig().getBoolean("show.vault.permissions");
 
         //deve essere abilitato vault economy?
         Economy economy = getServer().getServicesManager().getRegistration(Economy.class).getProvider();
@@ -103,7 +114,7 @@ public class BanList extends JavaPlugin {
 
             //imposto la variabile
             isEconomyEnabled = false;
-        } else isEconomyEnabled = getConfig().getBoolean("show.perms");
+        } else isEconomyEnabled = getConfig().getBoolean("show.vault.economy.bank") || getConfig().getBoolean("show.vault.economy.balances");
 
         //avvio il server in un runnable
         new BukkitRunnable() {
@@ -126,19 +137,25 @@ public class BanList extends JavaPlugin {
 
                     //se attivo il mute lo carico
                     if (isMutedEnabled) {
-                        String mutePath = getConfig().getString("output.path.mute");
+                        String mutePath = getConfig().getString("output.path.essentials.mute");
                         server.createContext(mutePath, new MuteRequestHandler());
+                    }
+
+                    //se attivo il mute lo carico
+                    if (isJailedEnabled) {
+                        String mutePath = getConfig().getString("output.path.essentials.jail");
+                        server.createContext(mutePath, new JailRequestHandler());
                     }
 
                     //se attivo vault permissions lo carico
                     if (isPermsEnabled) {
-                        String pexPath = getConfig().getString("output.path.perms");
+                        String pexPath = getConfig().getString("output.path.vault.permissions");
                         server.createContext(pexPath, new PermsRequestHandler());
                     }
 
                     //se attivo vault economy lo carico
                     if (isEconomyEnabled) {
-                        String pexPath = getConfig().getString("output.path.economy");
+                        String pexPath = getConfig().getString("output.path.vault.economy");
                         server.createContext(pexPath, new EconomyRequestHandler());
                     }
 
