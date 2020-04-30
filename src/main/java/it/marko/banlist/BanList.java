@@ -12,8 +12,11 @@ import com.sun.net.httpserver.HttpServer;
 import it.marko.banlist.handlers.BanRequestHandler;
 import it.marko.banlist.handlers.FreezeRequestHandler;
 import it.marko.banlist.handlers.MuteRequestHandler;
+import it.marko.banlist.handlers.PermsRequestHandler;
 import it.marko.freezer.Freezer;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.ChatColor;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.yaml.snakeyaml.error.YAMLException;
@@ -35,6 +38,7 @@ public class BanList extends JavaPlugin {
     private HttpServer server;
     private boolean isMutedEnabled;
     private boolean isFreezeEnabled;
+    private boolean isPermsEnabled;
 
 
     @Override
@@ -78,6 +82,17 @@ public class BanList extends JavaPlugin {
             isFreezeEnabled = false;
         } else isFreezeEnabled = getConfig().getBoolean("show.freeze");
 
+        //deve essere abilitato il pex?
+        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+        Permission p = rsp.getProvider();
+        if (getServer().getPluginManager().getPlugin("Vault") == null || p == null) {
+            //avviso che essentials non è installato
+            getLogger().warning("Vault non è installato! Non potrai vedere i gruppi dei player");
+
+            //imposto la variabile
+            isPermsEnabled = false;
+        } else isPermsEnabled = getConfig().getBoolean("show.perms");
+
         //avvio il server in un runnable
         new BukkitRunnable() {
             @Override
@@ -99,12 +114,18 @@ public class BanList extends JavaPlugin {
 
                     //se attivo il mute lo carico
                     if (isMutedEnabled) {
-                        String mute_path = getConfig().getString("output.path.mute");
-                        server.createContext(mute_path, new MuteRequestHandler());
+                        String mutePath = getConfig().getString("output.path.mute");
+                        server.createContext(mutePath, new MuteRequestHandler());
+                    }
+
+                    //se attivo pex lo carico
+                    if (isPermsEnabled) {
+                        String pexPath = getConfig().getString("output.path.perms");
+                        server.createContext(pexPath, new PermsRequestHandler());
                     }
 
                     //avvio il server
-                    printInfo("Avvio il server");
+                    printInfo("Avvio il server HTTP");
                     server.start();
                 } catch (IOException | YAMLException e) {
                     //fornisco una breve spiegazione se l'eccezione è un'instanza di YAMLException
@@ -149,7 +170,7 @@ public class BanList extends JavaPlugin {
             return;
 
         //avviso
-        printInfo("Fermo il server");
+        printInfo("Fermo il server HTTP");
 
         //fermo il server
         server.stop(errCode);
@@ -212,7 +233,7 @@ public class BanList extends JavaPlugin {
      * @see #printInfo(String)
      */
     public void printError(Throwable throwable) {
-        printError(Level.SEVERE, null, throwable);
+        printError(null, throwable);
     }
 
     /**
