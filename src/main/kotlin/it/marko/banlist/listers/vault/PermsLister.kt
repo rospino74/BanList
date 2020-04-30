@@ -5,7 +5,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package it.marko.banlist.listers
+package it.marko.banlist.listers.vault
 
 import net.milkbowl.vault.permission.Permission
 import com.google.gson.JsonArray
@@ -19,13 +19,10 @@ internal class PermsLister(private val permission: Permission) {
     }
 
     fun getJSON(type: Type) : JsonArray {
-        if(type == Type.GROUPS)
-            return listGroups()
-
-        if(type == Type.PERMISSIONS)
-            return listPermissions()
-
-        return JsonArray()
+        return when (type) {
+            Type.GROUPS -> listGroups()
+            Type.PERMISSIONS -> listPermissions()
+        }
     }
 
     private fun listPermissions(): JsonArray {
@@ -44,7 +41,7 @@ internal class PermsLister(private val permission: Permission) {
 
             //ciclo per inserire i player nei gruppi
             getServer().offlinePlayers.forEach { op ->
-                if(!permission.playerInGroup(null, op, it))
+                if(permission.playerInGroup(null, op, it))
                     permMembers.add(op.name)
             }
 

@@ -5,12 +5,13 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package it.marko.banlist.handlers
+package it.marko.banlist.handlers.vault
 
 import com.google.gson.JsonObject
 import com.sun.net.httpserver.HttpExchange
-import it.marko.banlist.listers.PermsLister
-import it.marko.banlist.listers.PermsLister.Type
+import it.marko.banlist.handlers.RequestHandler
+import it.marko.banlist.listers.vault.PermsLister
+import it.marko.banlist.listers.vault.PermsLister.Type
 import net.milkbowl.vault.permission.Permission
 import org.bukkit.Bukkit.getServer
 import java.io.OutputStream
