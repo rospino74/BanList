@@ -18,7 +18,7 @@ import java.io.OutputStream
  * Classe per gestire le richieste verso l'url definito in `output.path.ban`
  */
 internal class BanRequestHandler : RequestHandler() {
-    //istanza di Main
+    //istanza di BanList
     private val main: JavaPlugin = it.marko.banlist.BanList.getInstance()
 
     override fun handle(exchange: HttpExchange?) {
