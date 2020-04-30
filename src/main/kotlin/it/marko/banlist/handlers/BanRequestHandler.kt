@@ -9,10 +9,9 @@ package it.marko.banlist.handlers
 
 import com.google.gson.JsonObject
 import com.sun.net.httpserver.HttpExchange
-import org.bukkit.BanList
 import it.marko.banlist.listers.BanLister
+import org.bukkit.BanList
 import org.bukkit.plugin.java.JavaPlugin
-import java.io.OutputStream
 
 /**
  * Classe per gestire le richieste verso l'url definito in `output.path.ban`
@@ -22,7 +21,7 @@ internal class BanRequestHandler : RequestHandler() {
     private val main: JavaPlugin = it.marko.banlist.BanList.getInstance()
 
     override fun onIncomingRequest(exchange: HttpExchange) {
-       //creo il lister
+        //creo il lister
         val banList = BanLister()
         val out = JsonObject()
 
@@ -42,15 +41,7 @@ internal class BanRequestHandler : RequestHandler() {
             out.add("byIP", responseByIP)
         }
 
-
-        //imposto gli header per consentire le richieste AJAX
-        exchange.responseHeaders?.set("Content-Type", "application/json; charset=UTF-8")
-        exchange.responseHeaders?.set("Access-Control-Allow-Origin", "*")
-        exchange.sendResponseHeaders(200, out.toString().toByteArray().size.toLong())
-
-        //apro l'outputstream
-        val os: OutputStream? = exchange.responseBody
-        os?.write(out.toString().toByteArray())
-        os?.close()
+        //invio i dati
+        flushData(out.toString())
     }
 }

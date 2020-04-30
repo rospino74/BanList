@@ -25,14 +25,6 @@ internal class FreezeRequestHandler : RequestHandler() {
         out.add("freeze", freezeList.getJSON())
 
 
-        //imposto gli header per consentire le richieste AJAX
-        exchange.responseHeaders?.set("Content-Type", "application/json; charset=UTF-8")
-        exchange.responseHeaders?.set("Access-Control-Allow-Origin", "*")
-        exchange.sendResponseHeaders(200, out.toString().toByteArray().size.toLong())
-
-        //apro l'outputstream
-        val os: OutputStream? = exchange.responseBody
-        os?.write(out.toString().toByteArray())
-        os?.close()
+        flushData(out.toString())
     }
 }
