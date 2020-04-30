@@ -2,10 +2,13 @@
 output:
   path:
     ban: "/ban"
-    mute: "/mute"
     freeze: "/freeze"
-    perms: "/perms"
-    economy: "/economy"
+    essentials:
+      mute: "/mute"
+      jail: "/jail"
+    vault:
+      permissions: "/permissions"
+      economy: "/economy"
   port: 80
 
 # Cosa devo mostrare?
@@ -13,9 +16,12 @@ show:
   ban:
     byIP: true
     byNAME: true
-  mute: true
+  essentials:
+    mute: true
+    jail: true
   freeze: true
-  perms: true
-  economy:
-    banks: true
-    balances: true
+  vault:
+    permissions: true
+    economy:
+      banks: true
+      balances: true
