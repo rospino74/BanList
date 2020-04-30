@@ -10,12 +10,25 @@ package it.marko.banlist.handlers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import it.marko.banlist.BanList;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
 public abstract class RequestHandler implements HttpHandler {
     @Override
-    public abstract void handle(HttpExchange httpExchange) throws IOException;
+    public void handle(HttpExchange httpExchange) throws IOException {
+        //se httpExchange == null esco
+        if (httpExchange == null)
+            return;
+
+        //faccio il log
+        log("Richiesta HTTP ricevuta da '" + httpExchange.getRemoteAddress() + "', per il percorso '" + httpExchange.getRequestURI() + "'");
+
+        //chiamo il metodo onIncomeRequest
+        onIncomingRequest(httpExchange);
+    }
+
+    protected abstract void onIncomingRequest(@NotNull HttpExchange httpExchange) throws IOException;
 
     protected void log(String reason, Throwable throwable) {
         BanList.getInstance().printError(reason, throwable);

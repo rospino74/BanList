@@ -21,15 +21,8 @@ internal class BanRequestHandler : RequestHandler() {
     //istanza di Main
     private val main: JavaPlugin = it.marko.banlist.BanList.getInstance()
 
-    override fun handle(exchange: HttpExchange?) {
-        //se exchange == null esco
-        if (exchange == null)
-            return
-
-        //faccio il log
-        log("Richiesta HTTP ricevuta da '${exchange.remoteAddress}', per il percorso '${exchange.requestURI}'")
-
-        //creo il lister
+    override fun onIncomingRequest(exchange: HttpExchange) {
+       //creo il lister
         val banList = BanLister()
         val out = JsonObject()
 
