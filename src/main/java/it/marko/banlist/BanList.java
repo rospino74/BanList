@@ -169,6 +169,10 @@ public class BanList extends JavaPlugin {
 
                     //stampo l'errore
                     printError(e);
+
+                    //fermo il plugin
+                    printError("Disabilito il plugin");
+                    getServer().getPluginManager().disablePlugin(BanList.this);
                 }
             }
         }.runTaskAsynchronously(this);

@@ -11,34 +11,20 @@ import com.google.gson.JsonObject
 import com.sun.net.httpserver.HttpExchange
 import it.marko.banlist.handlers.RequestHandler
 import it.marko.banlist.listers.essentials.MuteLister
-import java.io.OutputStream
 
 /**
  * Classe per gestire le richieste verso l'url definito in `output.mute.path`
  */
 internal class MuteRequestHandler : RequestHandler() {
-    override fun handle(exchange: HttpExchange?) {
-        //se exchange == null esco
-        if (exchange == null)
-            return
-
-        //faccio il log
-        log("Richiesta HTTP ricevuta da '${exchange.remoteAddress}', per il percorso '${exchange.requestURI}'")
-
+    override fun onIncomingRequest(exchange: HttpExchange) {
+        //creo il lister
         val muteList = MuteLister()
 
         //creo il json di ritorno
         val out = JsonObject()
         out.add("mute", muteList.getJSON())
 
-        //imposto gli header per consentire le richieste AJAX
-        exchange.responseHeaders?.set("Content-Type", "application/json; charset=UTF-8")
-        exchange.responseHeaders?.set("Access-Control-Allow-Origin", "*")
-        exchange.sendResponseHeaders(200, out.toString().toByteArray().size.toLong())
-
-        //apro l'outputstream
-        val os: OutputStream? = exchange.responseBody
-        os?.write(out.toString().toByteArray())
-        os?.close()
+        //invio i dati
+        flushData(out.toString())
     }
 }
