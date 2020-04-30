@@ -18,37 +18,44 @@ internal class PermsLister(private val permission: Permission) {
         PERMISSIONS
     }
 
-    fun getJSON(type: Type) : JsonObject {
+    fun getJSON(type: Type) : JsonArray {
         if(type == Type.GROUPS)
             return listGroups()
 
         if(type == Type.PERMISSIONS)
             return listPermissions()
 
-        return JsonObject()
+        return JsonArray()
     }
 
-    private fun listPermissions(): JsonObject {
-        return JsonObject()
+    private fun listPermissions(): JsonArray {
+        return JsonArray()
     }
 
-    private fun listGroups(): JsonObject {
+    private fun listGroups(): JsonArray {
         //array di output
-        val out = JsonObject()
+        val out = JsonArray()
 
         //foreach per ogni gruppo
         permission.groups.forEach {
             //array di output pe singolo permesso
-            val permOut = JsonArray()
+            val permOut = JsonObject()
+            val permMembers = JsonArray()
 
             //ciclo per inserire i player nei gruppi
             getServer().offlinePlayers.forEach { op ->
                 if(!permission.playerInGroup(null, op, it))
-                    permOut.add(op.name)
+                    permMembers.add(op.name)
             }
 
+            //salvo il nome
+            permOut.addProperty("name", it)
+
+            //salvo i membri
+            permOut.add("members", permMembers)
+
             //salvo nella lista di output
-            out.add(it, permOut)
+            out.add(permOut)
         }
 
         //ritorno la lista

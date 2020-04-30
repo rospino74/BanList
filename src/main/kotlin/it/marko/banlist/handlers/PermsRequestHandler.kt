@@ -31,7 +31,7 @@ class PermsRequestHandler : RequestHandler() {
         val out = JsonObject()
 
         //lister
-        val list = PermsLister(p).getJSON(Type.GROUPS)!!
+        val list = PermsLister(p).getJSON(Type.GROUPS)
 
         //aggiungo all'output
         out.add("groups", list)
