@@ -3,6 +3,7 @@ output:
     ban: "/ban"
     mute: "/mute"
     freeze: "/freeze"
+    perms: "/perms"
   port: 80
 show:
   ban:
@@ -10,3 +11,4 @@ show:
     byNAME: true
   mute: true
   freeze: true
+  perms: true
