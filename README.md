@@ -6,7 +6,7 @@ Un giorno, non sapendo cosa fare a causa del coronavirus 🦠, ho perso quaranta
 ## Come si installa?
 ### Requisiti
 Il plugin [Essentials](https://github.com/EssentialsX/Essentials) è necessario per visualizzare gli utenti mutati, ma ritengo che questo ottimo plugin tu lo abbia già installato!
-Inoltre, se vuoi vedere la lista di utenti congelati, installa il mio plugin [Freezer](https://github.com/rospino74/Freezer). 
+Inoltre, se vuoi vedere la lista di utenti congelati, installa il mio plugin [Freezer](https://github.com/rospino74/Freezer). Non ti basta ancora? Con [Vault](https://github.com/MilkBowl/Vault) installato potrai visualizzare anche i gruppi di utenti!
 ### Utenti base
 * Scarica l'[ultima relase](https://github.com/rospino74/BanList/releases/latest)
 * Sposta il file `BanList-<version>.jar` nella cartella `plugins` del tuo server Minecraft
@@ -22,6 +22,8 @@ output:
   path:
     ban: "/ban"
     mute: "/mute"
+    freeze: "/freeze"
+    perms: "/perms"
   port: 80
 show:
   ban:
@@ -29,6 +31,7 @@ show:
     byNAME: true
   mute: true
   freeze: true
+  perms: true
 ```
 * `output.path.ban`: Directory alla quale il server mostrerà come output la lista di utenti bannati
 * `output.path.mute`: Directory alla quale il server mostrerà come output la lista di utenti mutati
@@ -37,6 +40,7 @@ show:
 * `show.ban.byNAME`: Il plugin deve mostrate gli utenti bannati per username?
 * `show.mute`: Il plugin deve mostrate gli utenti mutati? Se si è necessario il plugin [Essentials](https://github.com/EssentialsX/Essentials)
 * `show.freeze`: Il plugin deve mostrate gli utenti congelati? Se si è necessario il plugin [Freezer](https://github.com/rospino74/Freezer)
+* `show.perms`: Il plugin deve mostrate i gruppi? Se si è necessario il plugin [Vault](https://github.com/MilkBowl/Vault)
 ## Output Ban di esempio
 ```json
 {
@@ -102,6 +106,29 @@ show:
 | Chiave | Tipo | Significato |
 | :--- | :---: | --- |
 | `name` | `String` | Nome del player congelato |
+## Output Group di esempio
+```json
+{
+  "groups": [
+    {
+      "name": "default",
+      "members": [
+        "MemoryOfLife"
+      ]
+    },
+    {
+      "name": "admin",
+      "members": [
+        "MemoryOfLife"
+      ]
+    }
+  ]
+}
+```
+| Chiave | Tipo | Significato |
+| :--- | :---: | --- |
+| `name` | `String` | Nome del gruppo |
+| `members` | `Array` di `String` | Membri del gruppo |
 ## Errori comuni
 * `java.net.BindException`: La porta scelta è già in uso, cambiarla nel file di configurazione
 * `java.io.IOException`: Si è verificato un errore nel comunicare con un altro sistema
