@@ -9,6 +9,8 @@ package it.marko.banlist.listers
 
 import net.milkbowl.vault.permission.Permission
 import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import org.bukkit.Bukkit.getServer
 
 internal class PermsLister(private val permission: Permission) {
     enum class Type {
@@ -16,27 +18,37 @@ internal class PermsLister(private val permission: Permission) {
         PERMISSIONS
     }
 
-    fun getJSON(type: Type) : JsonArray? {
+    fun getJSON(type: Type) : JsonObject {
         if(type == Type.GROUPS)
             return listGroups()
 
         if(type == Type.PERMISSIONS)
             return listPermissions()
 
-        return JsonArray()
+        return JsonObject()
     }
 
-    private fun listPermissions(): JsonArray? {
-        return null
+    private fun listPermissions(): JsonObject {
+        return JsonObject()
     }
 
-    private fun listGroups(): JsonArray {
+    private fun listGroups(): JsonObject {
         //array di output
-        val out = JsonArray()
+        val out = JsonObject()
 
         //foreach per ogni gruppo
         permission.groups.forEach {
-            out.add(it)
+            //array di output pe singolo permesso
+            val permOut = JsonArray()
+
+            //ciclo per inserire i player nei gruppi
+            getServer().offlinePlayers.forEach { op ->
+                if(!permission.playerInGroup(null, op, it))
+                    permOut.add(op.name)
+            }
+
+            //salvo nella lista di output
+            out.add(it, permOut)
         }
 
         //ritorno la lista
