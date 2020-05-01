@@ -10,32 +10,40 @@ package it.marko.banlist.listers.essentials
 import com.earth2me.essentials.Essentials
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import org.bukkit.BanEntry
-import org.bukkit.BanList
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.Bukkit.getServer
-import org.bukkit.entity.Player
 
-/**
- * Classe che permette di avere in un formato diverso tutte le [BanEntry] fornite da [Bukkit.getBanList]
- */
 internal class JailedLister {
     //istanza di essentials
     private val essentials = Bukkit.getPluginManager().getPlugin("Essentials") as Essentials
 
+    enum class Type {
+        JAILED,
+        JAILS
+    }
+
     /**
      * Fornisce una lista in [JsonArray] contenente i dati della lista mutati
      *
+     * @param type Cosa devo ritornare?
      * @return Ritorna un [array][JsonArray] di [oggetti json][JsonObject]
      */
-    fun getJSON(): JsonArray {
+    fun getJSON(type: Type): JsonArray {
+        return when(type) {
+            Type.JAILED -> getJailed()
+            Type.JAILS -> getJails()
+        }
+    }
+
+    private fun getJailed(): JsonArray {
         val out = JsonArray()
 
         getServer().offlinePlayers.forEach {
             val user = essentials.getOfflineUser(it.name)
 
             //se l'utente non è in cella continuo
-            if(!user.isJailed) return@forEach
+            if (!user.isJailed) return@forEach
 
             //oggetto json
             val obj = JsonObject()
@@ -50,6 +58,46 @@ internal class JailedLister {
 
             //nome della cella
             obj.addProperty("jail", user.jail)
+
+            //appendo alla lista
+            out.add(obj)
+        }
+
+        //ritorno la lista
+        return out
+    }
+
+    private fun getJails(): JsonArray {
+        val out = JsonArray()
+
+        essentials.jails.list
+
+        essentials.jails.list.forEach {
+            val jail = essentials.jails.getJail(it)
+
+            //oggetto json
+            val obj = JsonObject()
+
+            //nome del player
+            obj.addProperty("name", it)
+
+            //chiave location
+            val location = JsonObject()
+
+            //Coordinata x
+            location.addProperty("x", jail.x)
+
+            //Coordinata y
+            location.addProperty("y", jail.y)
+
+            //Coordinata z
+            location.addProperty("z", jail.z)
+
+            //mondo
+            location.addProperty("world", jail.world!!.name)
+
+            //aggiungo a obj
+            obj.add("location", location)
 
             //appendo alla lista
             out.add(obj)
