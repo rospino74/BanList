@@ -18,7 +18,9 @@ show:
     byNAME: true
   essentials:
     mute: true
-    jail: true
+    jail:
+      jailed: true
+      jails: true
   freeze: true
   vault:
     permissions: true

@@ -9,21 +9,28 @@ package it.marko.banlist.handlers.essentials
 
 import com.google.gson.JsonObject
 import com.sun.net.httpserver.HttpExchange
+import org.bukkit.plugin.Plugin
+import it.marko.banlist.BanList
 import it.marko.banlist.handlers.RequestHandler
 import it.marko.banlist.listers.essentials.JailedLister
-import it.marko.banlist.listers.essentials.MuteLister
-import java.io.OutputStream
 
 /**
- * Classe per gestire le richieste verso l'url definito in `output.mute.path`
+ * Classe per gestire le richieste verso l'url definito in `output.path.essentials.jail`
  */
 internal class JailRequestHandler : RequestHandler() {
+    private val banList = BanList.getInstance() as Plugin
+
     override fun onIncomingRequest(exchange: HttpExchange) {
         val jailedList = JailedLister()
 
         //creo il json di ritorno
         val out = JsonObject()
-        out.add("jailed", jailedList.getJSON())
+
+        if(banList.config.getBoolean("show.essentials.jail.jailed"))
+            out.add("jailed", jailedList.getJSON(JailedLister.Type.JAILED))
+
+        if(banList.config.getBoolean("show.essentials.jail.jails"))
+            out.add("jails", jailedList.getJSON(JailedLister.Type.JAILS))
 
         flushData(out.toString())
     }

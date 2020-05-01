@@ -84,7 +84,7 @@ public class BanList extends JavaPlugin {
 
             //imposto la variabile
             isJailedEnabled = false;
-        } else isJailedEnabled = getConfig().getBoolean("show.essentials.jail");
+        } else isJailedEnabled = getConfig().getBoolean("show.essentials.jail.jailed") || getConfig().getBoolean("show.essentials.jail.jails");
 
         //deve essere abilitato il freeze?
         Freezer f = (Freezer) getServer().getPluginManager().getPlugin("Freezer");
@@ -143,8 +143,8 @@ public class BanList extends JavaPlugin {
 
                     //se attivo il mute lo carico
                     if (isJailedEnabled) {
-                        String mutePath = getConfig().getString("output.path.essentials.jail");
-                        server.createContext(mutePath, new JailRequestHandler());
+                        String jailPath = getConfig().getString("output.path.essentials.jail");
+                        server.createContext(jailPath, new JailRequestHandler());
                     }
 
                     //se attivo vault permissions lo carico
