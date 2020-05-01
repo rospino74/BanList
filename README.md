@@ -181,15 +181,35 @@ show:
       "forever": false,
       "jail": "a"
     }
+  ],
+  "jails": [
+    {
+      "name": "a",
+      "location": {
+        "x": -142.7315708181958,
+        "y": 45,
+        "z": 793.8098936062091,
+        "world": "SuperFlat"
+      }
+    }
   ]
 }
 ```
+#### Player Carcerato
 | Chiave | Tipo | Significato |
 | :--- | :---: | --- |
 | `name` | `String` | Nome del giocatore |
 | `until` | `int` | Data del termine della prigionia. È una data formato Unix |
 | `forever` | `bool` | Se è `true` la prigionia è permanente |
 | `jail` | `String` | Nome della cella dove il player è prigioniero |
+#### Prigione
+| Chiave | Tipo | Significato |
+| :--- | :---: | --- |
+| `name` | `String` | Nome della prigione |
+| `location.x` | `float` | Coordinata _X_ della cella |
+| `location.y` | `float` | Coordinata _Y_ della cella |
+| `location.z` | `float` | Coordinata _Z_ della cella |
+| `location.world` | `String` | Nome del mondo nel quale è situata la cella |
 ## Errori comuni
 * `java.net.BindException`: La porta scelta è già in uso, cambiarla nel file di configurazione
 * `java.io.IOException`: Si è verificato un errore nel comunicare con un altro sistema
