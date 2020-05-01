@@ -38,14 +38,15 @@ show:
     byNAME: true
   essentials:
     mute: true
-    jail: true
+    jail:
+      jailed: true
+      jails: true
   freeze: true
   vault:
     permissions: true
     economy:
       banks: true
       balances: true
-
 ```
 * `output.path.ban`: Directory alla quale il server mostrerà come output la lista di utenti bannati
 * `output.path.freeze`: Directory alla quale il server mostrerà come output la lista di utenti congelati
@@ -57,7 +58,8 @@ show:
 * `show.ban.byIP`: Il plugin deve mostrate gli utenti bannati per indirizzo IP?
 * `show.ban.byNAME`: Il plugin deve mostrate gli utenti bannati per username?
 * `show.essentials.mute`: Il plugin deve mostrate gli utenti mutati? Se si è necessario il plugin [Essentials](https://github.com/EssentialsX/Essentials)
-* `show.essentials.jail`: Il plugin deve mostrate gli utenti reclusi? Se si è necessario il plugin [Essentials](https://github.com/EssentialsX/Essentials)
+* `show.essentials.jail.jailed`: Il plugin deve mostrate gli utenti reclusi? Se si è necessario il plugin [Essentials](https://github.com/EssentialsX/Essentials)
+* `show.essentials.jail.jails`: Il plugin deve mostrate le prigioni esistenti? Se si è necessario il plugin [Essentials](https://github.com/EssentialsX/Essentials)
 * `show.freeze`: Il plugin deve mostrate gli utenti congelati? Se si è necessario il plugin [Freezer](https://github.com/rospino74/Freezer)
 * `show.vault.permissions`: Il plugin deve mostrate i gruppi? Se si è necessario il plugin [Vault](https://github.com/MilkBowl/Vault)
 * `show.vault.economy`: Il plugin deve mostrate i gruppi? Se si è necessario il plugin [Vault](https://github.com/MilkBowl/Vault)
