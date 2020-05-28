@@ -10,6 +10,7 @@ package it.marko.banlist.handlers
 import com.google.gson.JsonObject
 import com.sun.net.httpserver.HttpExchange
 import it.marko.banlist.listers.BanLister
+import it.marko.banlist.server.RequestHandler
 import org.bukkit.BanList
 import org.bukkit.plugin.java.JavaPlugin
 

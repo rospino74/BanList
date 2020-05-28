@@ -9,7 +9,7 @@ package it.marko.banlist.handlers.essentials
 
 import com.google.gson.JsonObject
 import com.sun.net.httpserver.HttpExchange
-import it.marko.banlist.handlers.RequestHandler
+import it.marko.banlist.server.RequestHandler
 import it.marko.banlist.listers.essentials.MuteLister
 
 /**

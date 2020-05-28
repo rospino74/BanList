@@ -11,7 +11,7 @@ import com.google.gson.JsonObject
 import com.sun.net.httpserver.HttpExchange
 import org.bukkit.plugin.Plugin
 import it.marko.banlist.BanList
-import it.marko.banlist.handlers.RequestHandler
+import it.marko.banlist.server.RequestHandler
 import it.marko.banlist.listers.essentials.JailedLister
 
 /**

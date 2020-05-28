@@ -5,7 +5,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package it.marko.banlist.handlers;
+package it.marko.banlist.server;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;

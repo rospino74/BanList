@@ -9,12 +9,11 @@ package it.marko.banlist.handlers.vault
 
 import com.google.gson.JsonObject
 import com.sun.net.httpserver.HttpExchange
-import it.marko.banlist.handlers.RequestHandler
+import it.marko.banlist.server.RequestHandler
 import it.marko.banlist.listers.vault.PermsLister
 import it.marko.banlist.listers.vault.PermsLister.Type
 import net.milkbowl.vault.permission.Permission
 import org.bukkit.Bukkit.getServer
-import java.io.OutputStream
 
 class PermsRequestHandler : RequestHandler() {
     //permissions

@@ -10,12 +10,11 @@ package it.marko.banlist.handlers.vault
 import com.google.gson.JsonObject
 import com.sun.net.httpserver.HttpExchange
 import it.marko.banlist.BanList
-import it.marko.banlist.handlers.RequestHandler
+import it.marko.banlist.server.RequestHandler
 import it.marko.banlist.listers.vault.EconomyLister
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit.getServer
 import org.bukkit.plugin.java.JavaPlugin
-import java.io.OutputStream
 
 class EconomyRequestHandler : RequestHandler() {
     //economy

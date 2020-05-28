@@ -10,7 +10,7 @@ package it.marko.banlist.handlers
 import com.google.gson.JsonObject
 import com.sun.net.httpserver.HttpExchange
 import it.marko.banlist.listers.FreezeLister
-import java.io.OutputStream
+import it.marko.banlist.server.RequestHandler
 
 /**
  * Classe per gestire le richieste verso l'url definito in `output.path.freeze`
