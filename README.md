@@ -1,6 +1,6 @@
 # BanList
 ## Cos'è questo BanList?
-BanList è un semplicissimo plugin per _Spigot/Bukkit_ che ti permette di avere in formato JSON la lista di utenti bannati nel tuo server Minecraft, sia per indirizzo IP che per username!
+BanList è un semplicissimo plugin per _Spigot/Bukkit_ che ti permette di avere in formato JSON la lista di utenti bannati nel tuo server Minecraft, sia per indirizzo IP che per username! Ma anche quelli congelati, quelli mutati, i gruppi di utenti, le celle e i carcerati! Ufff... quanto fiato ci vuole 🤯... Puoi addirittura vedere i bilanci del tuo plugin economy, oltre che i player online e offline! Non è fantastico?
 ## Storia di BanList
 Un giorno, non sapendo cosa fare a causa del coronavirus 🦠, ho perso quaranta minuti della mia vita a realizzare il plugin...
 ## Come si installa?
@@ -18,59 +18,99 @@ Inoltre, se vuoi vedere la lista di utenti congelati, installa il mio plugin [Fr
 ## Configurazione
 La configurazione di default del plugin è questa:
 ```yaml
+# Parametri configurazione SSL
+# Crea un nuovo certificato auto-firmato con:
+#   keytool -genkeypair -keyalg RSA -alias selfsigned -keystore <name> -storepass <password> -validity 360 -keysize 2048
+# Modifica poi i valori sottostanti
+ssl:
+  active: false
+  password: "banlist"
+  name: "key.jks"
+
 # Percorsi in cui mostrare l'output
 output:
   path:
-    ban: "/ban"
-    freeze: "/freeze"
-    onlinePlayers: "/online"
-    offlinePlayers: "/offline"
+    Ban: "/ban"
+    Freeze: "/freeze"
+    OnlinePlayers: "/online"
+    OfflinePlayers: "/offline"
     essentials:
-      mute: "/mute"
-      jail: "/jail"
+      Mute: "/mute"
+      Jail: "/jail"
     vault:
-      permissions: "/permissions"
-      economy: "/economy"
+      Permissions: "/permissions"
+      Economy: "/economy"
   port: 80
 
 # Cosa devo mostrare?
+enable:
+  OnlinePlayers: true
+  OfflinePlayers: true
+  Ban: true
+  Freeze: true
+  essentials:
+    Mute: true
+    Jail: true
+  vault:
+    Permissions: true
+    Economy: true
+
+# Impostazioni specifiche
 show:
   ban:
     byIP: true
     byNAME: true
   essentials:
-    mute: true
-    jail:
+    Jail:
       jailed: true
       jails: true
-  freeze: true
-  onlinePlayers: true
-  offlinePlayers: true
   vault:
-    permissions: true
-    economy:
+    Economy:
       banks: true
       balances: true
 ```
-* `output.path.ban`: Directory alla quale il server mostrerà come output la lista di utenti bannati
-* `output.path.freeze`: Directory alla quale il server mostrerà come output la lista di utenti congelati
-* `output.path.onlinePlayers`: Directory alla quale il server mostrerà come output la lista di utenti online
-* `output.path.offlinePlayers`: Directory alla quale il server mostrerà come output la lista di utenti offline
-* `output.path.essentials.mute`: Directory alla quale il server mostrerà come output la lista di utenti mutati
-* `output.path.essentials.jail`: Directory alla quale il server mostrerà come output la lista di utenti reclusi
-* `output.path.vault.permissions`: Directory alla quale il server mostrerà come output la lista di permessi
-* `output.path.vault.economy`: Directory alla quale il server mostrerà come output informazioni sull'economia
-* `output.port`: Porta sulla quale il server comunicherà. Ricordati che la porta deve essere aperta e libera da altri servizi
-* `show.ban.byIP`: Il plugin deve mostrate gli utenti bannati per indirizzo IP?
-* `show.ban.byNAME`: Il plugin deve mostrate gli utenti bannati per username?
-* `show.essentials.mute`: Il plugin deve mostrate gli utenti mutati? Se si è necessario il plugin [Essentials](https://github.com/EssentialsX/Essentials)
-* `show.essentials.jail.jailed`: Il plugin deve mostrate gli utenti reclusi? Se si è necessario il plugin [Essentials](https://github.com/EssentialsX/Essentials)
-* `show.essentials.jail.jails`: Il plugin deve mostrate le prigioni esistenti? Se si è necessario il plugin [Essentials](https://github.com/EssentialsX/Essentials)
-* `show.freeze`: Il plugin deve mostrate gli utenti congelati? Se si è necessario il plugin [Freezer](https://github.com/rospino74/Freezer)
-* `show.onlinePlayers`: Il plugin deve mostrate gli utenti online?
-* `show.offlinePlayers`: Il plugin deve mostrate gli utenti offline?
-* `show.vault.permissions`: Il plugin deve mostrate i gruppi? Se si è necessario il plugin [Vault](https://github.com/MilkBowl/Vault)
-* `show.vault.economy`: Il plugin deve mostrate i gruppi? Se si è necessario il plugin [Vault](https://github.com/MilkBowl/Vault)
+* `ssl`
+    * `active`: Deve essere attivo il server HTTPS?
+    * `password`: Password del certificato
+    * `name`: nome del certificato
+
+* `output`
+    * `path`
+        * `Ban`: Directory di output per la lista ban
+        * `Freeze`: Directory di output per la lista freeze, è necessario il plugin [Freezer](https://github.com/rospino74/Freezer)
+        * `OnlinePlayers`: Directory di output per la lista di utenti online
+        * `OfflinePlayers`: Directory di output per la lista di utenti offline
+        * `essentials`, Per le opzioni successive è necessario il plugin [Essentials](https://github.com/EssentialsX/Essentials)
+            * `Mute`: Directory di output per la lista di utenti mutati
+            * `Jail`: Directory di output per la lista di utenti carcerati e di prigioni
+        * `vault`, Per le opzioni successive è necessario il plugin [Vault](https://github.com/MilkBowl/Vault)
+            * `Permissions`: Directory di output per la lista di permessi
+            * `Economy`: Directory di output per la lista dei bilanci degli utenti e delle banche
+            
+* `enable`
+    * `Ban`: Attivare la lista ban?
+    * `Freeze`: Attivare la lista freeze? Se si è necessario il plugin [Freezer](https://github.com/rospino74/Freezer)
+    * `OnlinePlayers`: Attivare la lista di utenti online?
+    * `OfflinePlayers`: Attivare la lista di utenti offline?
+    * `essentials`, Per le opzioni successive è necessario il plugin [Essentials](https://github.com/EssentialsX/Essentials)
+        * `Mute`: Attivare la lista di utenti mutati?
+        * `Jail`: Attivare la lista di utenti carcerati e di prigioni?
+    * `vault`, Per le opzioni successive è necessario il plugin [Vault](https://github.com/MilkBowl/Vault)
+        * `Permissions`: Attivare la lista di permessi?
+        * `Economy`: Attivare la lista dei bilanci degli utenti e delle banche?
+
+* `show`
+  * `ban`, Impostazioni specifiche per l'output dei ban
+    * `byIP`: Mostrare i ban per indirizzo IP?
+    * `byNAME`: Mostrare i ban per username?
+  * `essentials`, Per le opzioni successive è necessario il plugin [Essentials](https://github.com/EssentialsX/Essentials)
+    * `Jail`, Impostazioni specifiche per l'output delle Jail
+      * `jailed`: true
+      * `jails`: true
+  * `vault`, Per le opzioni successive è necessario il plugin [Vault](https://github.com/MilkBowl/Vault)
+    * `Economy`, Impostazioni specifiche per l'output dell'Economy
+      * `banks`: Mostrare la lista di banche con i relativi bilanci? (Il tuo plugin di economy deve supportare queste ultime)
+      * `balances`: Mostrare la lista dei bilanci degli utenti?
 ## Output di esempio
 ### Ban
 ```json
@@ -103,7 +143,7 @@ show:
 | `until` | `int` | Data del termine del ban. È una data formato Unix |
 | `forever` | `bool` | Se è `true` il ban è permanente |
 | `created` | `int` | Data di creazione del ban. È una data formato Unix |
-| `admin` | `String` | Nome del admin che ha effetuato il ban. Può essere il nome di un player o `Server` se il ban è eseguito dalla console |
+| `admin` | `String` | Nome del admin che ha effettuato il ban. Può essere il nome di un player o `Server` se il ban è eseguito dalla console |
 | `reason` | `String` | Motivo del ban |
 ### Mute
 ```json
