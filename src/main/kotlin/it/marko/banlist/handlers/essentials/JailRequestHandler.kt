@@ -26,10 +26,10 @@ internal class JailRequestHandler : RequestHandler() {
         //creo il json di ritorno
         val out = JsonObject()
 
-        if(banList.config.getBoolean("show.essentials.jail.jailed"))
+        if(banList.config.getBoolean("show.essentials.Jail.jailed"))
             out.add("jailed", jailedList.getJSON(JailedLister.Type.JAILED))
 
-        if(banList.config.getBoolean("show.essentials.jail.jails"))
+        if(banList.config.getBoolean("show.essentials.Jail.jails"))
             out.add("jails", jailedList.getJSON(JailedLister.Type.JAILS))
 
         flushData(out.toString())

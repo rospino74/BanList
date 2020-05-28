@@ -106,7 +106,7 @@ public class BanList extends JavaPlugin {
                         server = Server.buildInsecure(getConfig().getInt("output.port"), Executors.newCachedThreadPool());
                     }
 
-                    enableRoutes("show", getConfig()
+                    enableRoutes("enable", getConfig()
                             .getConfigurationSection("show")
                             .getKeys(false));
 
@@ -152,14 +152,14 @@ public class BanList extends JavaPlugin {
                     return;
 
                 //nome della classe
-                String className = "it.marko.banlist.handlers" + newPath.replace("show", "") + "RequestHandler";
+                String className = "it.marko.banlist.handlers" + newPath.replace("enable", "") + "RequestHandler";
 
                 try {
                     //prendo la classe
                     Class<? extends RequestHandler> handler = (Class<? extends RequestHandler>) Class.forName(className);
 
                     //prendo l'url di output
-                    String url = getConfig().getString("output.path" + newPath.replace("show", ""));
+                    String url = getConfig().getString("output.path" + newPath.replace("enable", ""));
 
                     //aggiungo il contesto
                     server.createContext(url, handler.newInstance());
@@ -235,7 +235,7 @@ public class BanList extends JavaPlugin {
     }
 
     /**
-     * Stampo l'errore in un box con livello {@link Level#WARNING}
+     * Stampo l'errore in un box con livello {@link Level#SEVERE}
      *
      * @param reason Motivo dell'errore
      * @see #printError(String, Throwable)

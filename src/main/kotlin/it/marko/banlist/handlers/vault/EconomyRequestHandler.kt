@@ -30,14 +30,14 @@ class EconomyRequestHandler : RequestHandler() {
         val lister = EconomyLister(e)
 
         //mostro i bilanci degli utenti se attivati
-        if (main.config.getBoolean("show.vault.economy.balances")) {
+        if (main.config.getBoolean("show.vault.Economy.balances")) {
             val balances = lister.getJSON(EconomyLister.Type.BALANCES)
             //aggiungo all'output
             out.add("balances", balances)
         }
 
         //mostro i bilanci delle banche se attivati
-        if (main.config.getBoolean("show.vault.economy.banks") && e.hasBankSupport()) {
+        if (main.config.getBoolean("show.vault.Economy.banks") && e.hasBankSupport()) {
             val banks = lister.getJSON(EconomyLister.Type.BANKS)
             //aggiungo all'output
             out.add("banks", banks)

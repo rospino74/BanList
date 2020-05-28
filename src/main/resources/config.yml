@@ -23,7 +23,7 @@ output:
   port: 80
 
 # Cosa devo mostrare?
-show:
+enable:
   OnlinePlayers: true
   OfflinePlayers: true
   Ban: true
@@ -34,3 +34,16 @@ show:
   vault:
     Permissions: true
     Economy: true
+
+show:
+  ban:
+    byIP: true
+    byNAME: true
+  essentials:
+    Jail:
+      jailed: true
+      jails: true
+  vault:
+    Economy:
+      banks: true
+      balances: true
