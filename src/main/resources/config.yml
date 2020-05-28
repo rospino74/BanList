@@ -1,8 +1,19 @@
+# Parametri configurazione SSL
+# Crea una nuova chiave auto-firmata con:
+#   keytool -genkeypair -keyalg RSA -alias selfsigned -keystore <name> -storepass <password> -validity 360 -keysize 2048
+# Modifica poi i valori sottostanti
+ssl:
+  active: true
+  password: "banlist"
+  name: "key.jks"
+
 # Percorsi in cui mostrare l'output
 output:
   path:
     ban: "/ban"
     freeze: "/freeze"
+    onlinePlayers: "/online"
+    offlinePlayers: "/offline"
     essentials:
       mute: "/mute"
       jail: "/jail"
@@ -22,6 +33,8 @@ show:
       jailed: true
       jails: true
   freeze: true
+  onlinePlayers: true
+  offlinePlayers: true
   vault:
     permissions: true
     economy:

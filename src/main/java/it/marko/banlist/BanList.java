@@ -8,7 +8,6 @@
 package it.marko.banlist;
 
 import com.earth2me.essentials.Essentials;
-import com.sun.net.httpserver.HttpServer;
 import it.marko.banlist.handlers.BanRequestHandler;
 import it.marko.banlist.handlers.FreezeRequestHandler;
 import it.marko.banlist.handlers.essentials.JailRequestHandler;
@@ -16,17 +15,15 @@ import it.marko.banlist.handlers.essentials.MuteRequestHandler;
 import it.marko.banlist.handlers.vault.EconomyRequestHandler;
 import it.marko.banlist.handlers.vault.PermsRequestHandler;
 import it.marko.freezer.Freezer;
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.permission.Permission;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.yaml.snakeyaml.error.YAMLException;
 
+import java.io.File;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.concurrent.Executor;
+import java.security.GeneralSecurityException;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
@@ -38,7 +35,7 @@ public class BanList extends JavaPlugin {
      */
     public static final String PREFIX = ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "[BanList] " + ChatColor.RESET;
     private static BanList instance;
-    private HttpServer server;
+    private Server server;
     private boolean isMutedEnabled;
     private boolean isJailedEnabled;
     private boolean isFreezeEnabled;
@@ -51,7 +48,7 @@ public class BanList extends JavaPlugin {
         super.onDisable();
 
         //fermo il server
-        stopHTTPServer(1);
+        server.stop();
 
         //rimuovo l'instanza
         BanList.instance = null;
@@ -66,6 +63,10 @@ public class BanList extends JavaPlugin {
 
         //salvo i config di default
         saveDefaultConfig();
+
+        //salvo il certificato se non esiste e ssl abilitato
+        if(!new File(BanList.getInstance().getDataFolder(), getConfig().getString("ssl.name")).exists() && getConfig().getBoolean("ssl.active"))
+            saveResource(getConfig().getString("ssl.name"), true);
 
         //deve essere abilitato il mute?
         Essentials e = (Essentials) getServer().getPluginManager().getPlugin("Essentials");
@@ -84,7 +85,8 @@ public class BanList extends JavaPlugin {
 
             //imposto la variabile
             isJailedEnabled = false;
-        } else isJailedEnabled = getConfig().getBoolean("show.essentials.jail.jailed") || getConfig().getBoolean("show.essentials.jail.jails");
+        } else
+            isJailedEnabled = getConfig().getBoolean("show.essentials.jail.jailed") || getConfig().getBoolean("show.essentials.jail.jails");
 
         //deve essere abilitato il freeze?
         Freezer f = (Freezer) getServer().getPluginManager().getPlugin("Freezer");
@@ -97,8 +99,7 @@ public class BanList extends JavaPlugin {
         } else isFreezeEnabled = getConfig().getBoolean("show.freeze");
 
         //deve essere abilitato vault permissions?
-        Permission p = getServer().getServicesManager().getRegistration(Permission.class).getProvider();
-        if (getServer().getPluginManager().getPlugin("Vault") == null || p == null) {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
             //avviso che essentials non è installato
             getLogger().warning("Vault non è installato! Non potrai vedere i gruppi dei player");
 
@@ -107,22 +108,27 @@ public class BanList extends JavaPlugin {
         } else isPermsEnabled = getConfig().getBoolean("show.vault.permissions");
 
         //deve essere abilitato vault economy?
-        Economy economy = getServer().getServicesManager().getRegistration(Economy.class).getProvider();
-        if (getServer().getPluginManager().getPlugin("Vault") == null || economy == null) {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
             //avviso che essentials non è installato
             getLogger().warning("Vault non è installato! Non potrai vedere i bilanci dei player");
 
             //imposto la variabile
             isEconomyEnabled = false;
-        } else isEconomyEnabled = getConfig().getBoolean("show.vault.economy.bank") || getConfig().getBoolean("show.vault.economy.balances");
+        } else
+            isEconomyEnabled = getConfig().getBoolean("show.vault.economy.bank") || getConfig().getBoolean("show.vault.economy.balances");
 
-        //avvio il server in un runnable
+        //avvio il server con un runnable
         new BukkitRunnable() {
             @Override
             public void run() {
                 try {
                     //creo il server con la porta definita in output.port
-                    buildHTTPServer(getConfig().getInt("output.port"), Executors.newCachedThreadPool());
+                    //se non sicuro
+                    if(getConfig().getBoolean("ssl.active")) {
+                        server = Server.buildSecure(getConfig().getInt("output.port"), Executors.newCachedThreadPool());
+                    } else {
+                        server = Server.buildInsecure(getConfig().getInt("output.port"), Executors.newCachedThreadPool());
+                    }
 
                     //prendo il ban path
                     String banPath = getConfig().getString("output.path.ban");
@@ -161,11 +167,14 @@ public class BanList extends JavaPlugin {
 
                     //avvio il server
                     printInfo("Avvio il server HTTP");
-                    server.start();
-                } catch (IOException | YAMLException e) {
-                    //fornisco una breve spiegazione se l'eccezione è un'instanza di YAMLException
-                    if (e instanceof YAMLException)
+                    server.run();
+                } catch (IOException | YAMLException | GeneralSecurityException e) {
+                    //fornisco una breve spiegazione se l'eccezione è un'instanza di YAMLException o di GeneralSecurityException
+                    if (e instanceof YAMLException) {
                         getLogger().severe("Sembra che il file di configurazione non sia valido!");
+                    } else if (e instanceof GeneralSecurityException) {
+                        getLogger().severe("Sembra che il file di sicurezza non sia valido!");
+                    }
 
                     //stampo l'errore
                     printError(e);
@@ -179,40 +188,11 @@ public class BanList extends JavaPlugin {
 
     }
 
-    /**
-     * Crea un'instanza del server HTTP
-     *
-     * @param port     Porta da utilizzare per la creazione del server
-     * @param executor Processo sul quale eseguire il server
-     * @throws IOException Lancia una {@link IOException} se si verifica un errore nella creazione del server
-     * @see #stopHTTPServer(int)
-     */
-    private HttpServer buildHTTPServer(int port, Executor executor) throws IOException {
-        //avviso
-        printInfo("Creo il server sulla porta " + port);
 
-        server = HttpServer.create(new InetSocketAddress(port), 0);
-        server.setExecutor(executor);
 
-        //ritorno il server
-        return server;
-    }
 
-    /**
-     * Ferma il server creato con {@link #buildHTTPServer(int, Executor)}
-     *
-     * @param errCode messaggio di errore
-     */
-    private void stopHTTPServer(int errCode) {
-        //se il server non esiste ritorno
-        if (server == null)
-            return;
 
-        //avviso
-        printInfo("Fermo il server HTTP");
 
-        //fermo il server
-        server.stop(errCode);
     }
 
     /**
