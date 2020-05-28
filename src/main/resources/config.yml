@@ -3,40 +3,34 @@
 #   keytool -genkeypair -keyalg RSA -alias selfsigned -keystore <name> -storepass <password> -validity 360 -keysize 2048
 # Modifica poi i valori sottostanti
 ssl:
-  active: true
+  active: false
   password: "banlist"
   name: "key.jks"
 
 # Percorsi in cui mostrare l'output
 output:
   path:
-    ban: "/ban"
-    freeze: "/freeze"
-    onlinePlayers: "/online"
-    offlinePlayers: "/offline"
+    Ban: "/ban"
+    Freeze: "/freeze"
+    OnlinePlayers: "/online"
+    OfflinePlayers: "/offline"
     essentials:
-      mute: "/mute"
-      jail: "/jail"
+      Mute: "/mute"
+      Jail: "/jail"
     vault:
-      permissions: "/permissions"
-      economy: "/economy"
+      Permissions: "/permissions"
+      Economy: "/economy"
   port: 80
 
 # Cosa devo mostrare?
 show:
-  ban:
-    byIP: true
-    byNAME: true
+  OnlinePlayers: true
+  OfflinePlayers: true
+  Ban: true
+  Freeze: true
   essentials:
-    mute: true
-    jail:
-      jailed: true
-      jails: true
-  freeze: true
-  onlinePlayers: true
-  offlinePlayers: true
+    Mute: true
+    Jail: true
   vault:
-    permissions: true
-    economy:
-      banks: true
-      balances: true
+    Permissions: true
+    Economy: true
