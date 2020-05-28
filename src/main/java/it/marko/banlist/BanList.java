@@ -8,18 +8,10 @@
 package it.marko.banlist;
 
 import com.earth2me.essentials.Essentials;
-import it.marko.banlist.handlers.BanRequestHandler;
-import it.marko.banlist.handlers.FreezeRequestHandler;
-import it.marko.banlist.handlers.OfflinePlayersRequestHandler;
-import it.marko.banlist.handlers.OnlinePlayersRequestHandler;
-import it.marko.banlist.handlers.essentials.JailRequestHandler;
-import it.marko.banlist.handlers.essentials.MuteRequestHandler;
-import it.marko.banlist.handlers.vault.EconomyRequestHandler;
-import it.marko.banlist.handlers.vault.PermsRequestHandler;
+import it.marko.banlist.server.RequestHandler;
 import it.marko.banlist.server.Server;
 import it.marko.freezer.Freezer;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -28,6 +20,7 @@ import org.yaml.snakeyaml.error.YAMLException;
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
@@ -40,11 +33,6 @@ public class BanList extends JavaPlugin {
     public static final String PREFIX = ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "[BanList] " + ChatColor.RESET;
     private static BanList instance;
     private Server server;
-    private boolean isMutedEnabled;
-    private boolean isJailedEnabled;
-    private boolean isFreezeEnabled;
-    private boolean isPermsEnabled;
-    private boolean isEconomyEnabled;
 
 
     @Override
@@ -53,6 +41,7 @@ public class BanList extends JavaPlugin {
 
         //fermo il server
         server.stop();
+        printInfo("Fermo il server HTTP");
 
         //rimuovo l'instanza
         BanList.instance = null;
@@ -69,28 +58,20 @@ public class BanList extends JavaPlugin {
         saveDefaultConfig();
 
         //salvo il certificato se non esiste e ssl abilitato
-        if(!new File(BanList.getInstance().getDataFolder(), getConfig().getString("ssl.name")).exists() && getConfig().getBoolean("ssl.active"))
-            saveResource(getConfig().getString("ssl.name"), true);
+        String keyName = getConfig().getString("ssl.name", "key.jks");
+        if (!new File(BanList.getInstance().getDataFolder(), keyName).exists() && getConfig().getBoolean("ssl.active", false))
+            saveResource(keyName, true);
 
         //deve essere abilitato il mute?
         Essentials e = (Essentials) getServer().getPluginManager().getPlugin("Essentials");
         if (e == null) {
             //avviso che essentials non è installato
-            getLogger().warning("Essentials non è installato! Non potrai vedere i player mutati");
+            getLogger().warning("Essentials non è installato! Non potrai vedere i player mutati e quelli carcerati");
 
             //imposto la variabile
-            isMutedEnabled = false;
-        } else isMutedEnabled = getConfig().getBoolean("show.essentials.mute");
-
-        //deve essere abilitato il jail?
-        if (e == null) {
-            //avviso che essentials non è installato
-            getLogger().warning("Essentials non è installato! Non potrai vedere i player carcerati");
-
-            //imposto la variabile
-            isJailedEnabled = false;
-        } else
-            isJailedEnabled = getConfig().getBoolean("show.essentials.jail.jailed") || getConfig().getBoolean("show.essentials.jail.jails");
+            getConfig().set("show.essentials.Mute", false);
+            getConfig().set("show.essentials.Jail", false);
+        }
 
         //deve essere abilitato il freeze?
         Freezer f = (Freezer) getServer().getPluginManager().getPlugin("Freezer");
@@ -99,27 +80,18 @@ public class BanList extends JavaPlugin {
             getLogger().warning("Freezer non è installato! Non potrai vedere i player mutati");
 
             //imposto la variabile
-            isFreezeEnabled = false;
-        } else isFreezeEnabled = getConfig().getBoolean("show.freeze");
+            getConfig().set("show.Freeze", false);
+        }
 
         //deve essere abilitato vault permissions?
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
             //avviso che essentials non è installato
-            getLogger().warning("Vault non è installato! Non potrai vedere i gruppi dei player");
+            getLogger().warning("Vault non è installato! Non potrai vedere i gruppi dei player e i bilanci dei player");
 
             //imposto la variabile
-            isPermsEnabled = false;
-        } else isPermsEnabled = getConfig().getBoolean("show.vault.permissions");
-
-        //deve essere abilitato vault economy?
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
-            //avviso che essentials non è installato
-            getLogger().warning("Vault non è installato! Non potrai vedere i bilanci dei player");
-
-            //imposto la variabile
-            isEconomyEnabled = false;
-        } else
-            isEconomyEnabled = getConfig().getBoolean("show.vault.economy.bank") || getConfig().getBoolean("show.vault.economy.balances");
+            getConfig().set("show.vault.Permissions", false);
+            getConfig().set("show.vault.Economy", false);
+        }
 
         //avvio il server con un runnable
         new BukkitRunnable() {
@@ -128,57 +100,15 @@ public class BanList extends JavaPlugin {
                 try {
                     //creo il server con la porta definita in output.port
                     //se non sicuro
-                    if(getConfig().getBoolean("ssl.active")) {
+                    if (getConfig().getBoolean("ssl.active")) {
                         server = Server.buildSecure(getConfig().getInt("output.port"), Executors.newCachedThreadPool());
                     } else {
                         server = Server.buildInsecure(getConfig().getInt("output.port"), Executors.newCachedThreadPool());
                     }
 
-                    //prendo il ban path
-                    String banPath = getConfig().getString("output.path.ban");
-                    //aggiungo un route per ban
-                    server.createContext(banPath, new BanRequestHandler());
-
-                    //se attivo il freeze lo carico
-                    if (isFreezeEnabled) {
-                        String freezePath = getConfig().getString("output.path.freeze");
-                        server.createContext(freezePath, new FreezeRequestHandler());
-                    }
-
-                    //se attivo player Online lo carico
-                    if (getConfig().getBoolean("show.onlinePlayers")) {
-                        String onlinePath = getConfig().getString("output.path.onlinePlayers");
-                        server.createContext(onlinePath, new OnlinePlayersRequestHandler());
-                    }
-                    //se attivo player offline lo carico
-                    if (getConfig().getBoolean("show.offlinePlayers")) {
-                        String offlinePath = getConfig().getString("output.path.offlinePlayers");
-                        server.createContext(offlinePath, new OfflinePlayersRequestHandler());
-                    }
-
-                    //se attivo il mute lo carico
-                    if (isMutedEnabled) {
-                        String mutePath = getConfig().getString("output.path.essentials.mute");
-                        server.createContext(mutePath, new MuteRequestHandler());
-                    }
-
-                    //se attivo il mute lo carico
-                    if (isJailedEnabled) {
-                        String jailPath = getConfig().getString("output.path.essentials.jail");
-                        server.createContext(jailPath, new JailRequestHandler());
-                    }
-
-                    //se attivo vault permissions lo carico
-                    if (isPermsEnabled) {
-                        String pexPath = getConfig().getString("output.path.vault.permissions");
-                        server.createContext(pexPath, new PermsRequestHandler());
-                    }
-
-                    //se attivo vault economy lo carico
-                    if (isEconomyEnabled) {
-                        String pexPath = getConfig().getString("output.path.vault.economy");
-                        server.createContext(pexPath, new EconomyRequestHandler());
-                    }
+                    enableRoutes("show", getConfig()
+                            .getConfigurationSection("show")
+                            .getKeys(false));
 
                     //avvio il server
                     printInfo("Avvio il server HTTP");
@@ -203,11 +133,44 @@ public class BanList extends JavaPlugin {
 
     }
 
+    private void enableRoutes(String path, Set<String> list) {
+        list.forEach(obj -> {
+            //percorso corrente
+            String newPath = path + "." + obj;
 
+            try {
+                //cerco di ottenere le chiavi dell'oggetto, se fallisco vuol dire che è una chiave
+                Set<String> objects = getConfig()
+                        .getConfigurationSection(newPath)
+                        .getKeys(false);
 
+                //ripeto con nuovo percorso
+                enableRoutes(newPath, objects);
+            } catch (ClassCastException | NullPointerException ex) {
+                //se non è abilitato ritorno
+                if (!getConfig().getBoolean(newPath))
+                    return;
 
+                //nome della classe
+                String className = "it.marko.banlist.handlers" + newPath.replace("show", "") + "RequestHandler";
 
+                try {
+                    //prendo la classe
+                    Class<? extends RequestHandler> handler = (Class<? extends RequestHandler>) Class.forName(className);
 
+                    //prendo l'url di output
+                    String url = getConfig().getString("output.path" + newPath.replace("show", ""));
+
+                    //aggiungo il contesto
+                    server.createContext(url, handler.newInstance());
+
+                } catch (ClassNotFoundException e) {
+                    printError("Classe " + className + "non trovata", e);
+                } catch (IllegalAccessException | InstantiationException e) {
+                    printError("Classe " + className + "non stanziabile", e);
+                }
+            }
+        });
     }
 
     /**
