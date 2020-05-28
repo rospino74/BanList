@@ -10,12 +10,16 @@ package it.marko.banlist;
 import com.earth2me.essentials.Essentials;
 import it.marko.banlist.handlers.BanRequestHandler;
 import it.marko.banlist.handlers.FreezeRequestHandler;
+import it.marko.banlist.handlers.OfflinePlayersRequestHandler;
+import it.marko.banlist.handlers.OnlinePlayersRequestHandler;
 import it.marko.banlist.handlers.essentials.JailRequestHandler;
 import it.marko.banlist.handlers.essentials.MuteRequestHandler;
 import it.marko.banlist.handlers.vault.EconomyRequestHandler;
 import it.marko.banlist.handlers.vault.PermsRequestHandler;
+import it.marko.banlist.server.Server;
 import it.marko.freezer.Freezer;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -139,6 +143,17 @@ public class BanList extends JavaPlugin {
                     if (isFreezeEnabled) {
                         String freezePath = getConfig().getString("output.path.freeze");
                         server.createContext(freezePath, new FreezeRequestHandler());
+                    }
+
+                    //se attivo player Online lo carico
+                    if (getConfig().getBoolean("show.onlinePlayers")) {
+                        String onlinePath = getConfig().getString("output.path.onlinePlayers");
+                        server.createContext(onlinePath, new OnlinePlayersRequestHandler());
+                    }
+                    //se attivo player offline lo carico
+                    if (getConfig().getBoolean("show.offlinePlayers")) {
+                        String offlinePath = getConfig().getString("output.path.offlinePlayers");
+                        server.createContext(offlinePath, new OfflinePlayersRequestHandler());
                     }
 
                     //se attivo il mute lo carico

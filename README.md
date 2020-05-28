@@ -23,6 +23,8 @@ output:
   path:
     ban: "/ban"
     freeze: "/freeze"
+    onlinePlayers: "/online"
+    offlinePlayers: "/offline"
     essentials:
       mute: "/mute"
       jail: "/jail"
@@ -42,6 +44,8 @@ show:
       jailed: true
       jails: true
   freeze: true
+  onlinePlayers: true
+  offlinePlayers: true
   vault:
     permissions: true
     economy:
@@ -50,6 +54,8 @@ show:
 ```
 * `output.path.ban`: Directory alla quale il server mostrerà come output la lista di utenti bannati
 * `output.path.freeze`: Directory alla quale il server mostrerà come output la lista di utenti congelati
+* `output.path.onlinePlayers`: Directory alla quale il server mostrerà come output la lista di utenti online
+* `output.path.offlinePlayers`: Directory alla quale il server mostrerà come output la lista di utenti offline
 * `output.path.essentials.mute`: Directory alla quale il server mostrerà come output la lista di utenti mutati
 * `output.path.essentials.jail`: Directory alla quale il server mostrerà come output la lista di utenti reclusi
 * `output.path.vault.permissions`: Directory alla quale il server mostrerà come output la lista di permessi
@@ -61,6 +67,8 @@ show:
 * `show.essentials.jail.jailed`: Il plugin deve mostrate gli utenti reclusi? Se si è necessario il plugin [Essentials](https://github.com/EssentialsX/Essentials)
 * `show.essentials.jail.jails`: Il plugin deve mostrate le prigioni esistenti? Se si è necessario il plugin [Essentials](https://github.com/EssentialsX/Essentials)
 * `show.freeze`: Il plugin deve mostrate gli utenti congelati? Se si è necessario il plugin [Freezer](https://github.com/rospino74/Freezer)
+* `show.onlinePlayers`: Il plugin deve mostrate gli utenti online?
+* `show.offlinePlayers`: Il plugin deve mostrate gli utenti offline?
 * `show.vault.permissions`: Il plugin deve mostrate i gruppi? Se si è necessario il plugin [Vault](https://github.com/MilkBowl/Vault)
 * `show.vault.economy`: Il plugin deve mostrate i gruppi? Se si è necessario il plugin [Vault](https://github.com/MilkBowl/Vault)
 ## Output di esempio
